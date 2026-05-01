@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TideWise Solutions</title>
+
+  <style>
+    :root {
+      --teal-dark: #0b3f46;
+      --teal: #1f7f89;
+      --aqua: #7fd6d9;
+      --sand: #f4d49b;
+      --coral: #ef5c45;
+      --coral-dark: #c94236;
+      --cream: #fffaf0;
+      --white: #ffffff;
+      --text: #17383d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--aqua), var(--cream));
+      padding: 24px 8%;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 420px;
+      width: 90%;
+      margin-bottom: 20px;
+    }
+
+    .hero {
+      padding: 50px 8% 70px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--cream), #e8fbfb);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      color: var(--teal-dark);
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      max-width: 850px;
+      margin: 0 auto 28px;
+      font-size: 1.2rem;
+    }
+
+    .highlight {
+      color: var(--coral);
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: bold;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--coral);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--coral-dark);
+    }
+
+    .btn-secondary {
+      border: 2px solid var(--teal-dark);
+      color: var(--teal-dark);
+      background: var(--white);
+    }
+
+    section {
+      padding: 70px 8%;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.3rem;
+      color: var(--teal-dark);
+      margin-bottom: 20px;
+    }
+
+    .section-intro {
+      max-width: 850px;
+      margin: 0 auto 45px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .problem {
+      background: var(--white);
+    }
+
+    .model {
+      background: #e9fafa;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      max-width: 1150px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(11, 63, 70, 0.12);
+      border-top: 8px solid var(--coral);
+    }
+
+    .card h3 {
+      color: var(--teal-dark);
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+    }
+
+    .card ul {
+      margin-top: 16px;
+      padding-left: 20px;
+    }
+
+    .card li {
+      margin-bottom: 8px;
+    }
+
+    .why {
+      background: var(--cream);
+    }
+
+    .services {
+      background: var(--white);
+    }
+
+    .service-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .service-item {
+      background: #e9fafa;
+      border-left: 6px solid var(--teal);
+      padding: 18px;
+      border-radius: 14px;
+      font-weight: bold;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+      color: var(--white);
+      text-align: center;
+      padding: 80px 8%;
+    }
+
+    .cta h2 {
+      font-size: 2.6rem;
+      margin-bottom: 18px;
+    }
+
+    .cta p {
+      max-width: 750px;
+      margin: 0 auto 30px;
+      font-size: 1.15rem;
+    }
+
+    footer {
+      background: var(--teal-dark);
+      color: var(--white);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 700px) {
+      section {
+        padding: 50px 6%;
+      }
+
+      .hero {
+        padding: 35px 6% 55px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="tidewise-logo.jpg" alt="TideWise Solutions Logo" class="logo" />
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <h1>Web Design + Digital Marketing <br>That Scales With Your Growth</h1>
+      <p>
+        TideWise Solutions helps new and growing service businesses build a professional online presence
+        without the heavy upfront costs of most web developers and digital marketing companies that often <span class="highlight">stifle early growth</span>.
+      </p>
+      <p>
+        We combine web design, social media marketing, SEO, lead generation, branded email, and domain setup
+        into one simple growth system — for less than many businesses would normally pay for just one service.
+      </p>
+
+      <div class="buttons">
+        <a href="#contact" class="btn btn-primary">Start Building Your Foundation</a>
+        <a href="#model" class="btn btn-secondary">See How It Works</a>
+      </div>
+    </section>
+
+    <section class="problem">
+      <h2 class="section-title">Starting a Business Is Expensive Enough</h2>
+      <p class="section-intro">
+        Most small service businesses need a website, a domain, professional email, social media management,
+        SEO, and marketing support before they can even begin competing online.
+      </p>
+      <p class="section-intro">
+        Hiring separate companies for each service can get expensive fast. TideWise Solutions gives service
+        businesses a smarter way to launch: one affordable startup fee, 90 days of focused online growth,
+        and pricing that scales based on the real value being delivered.
+      </p>
+    </section>
+
+    <section class="model" id="model">
+      <h2 class="section-title">The Foundation → Integration → Scale Model</h2>
+      <p class="section-intro">
+        Our model is designed to help your business launch lean, grow intentionally,<br> and scale with real results.
+      </p>
+
+      <div class="cards">
+
+        <div class="card">
+          <h3>1. Foundation</h3>
+          <p><strong>Launch with an affordable startup fee.</strong></p>
+          <p>
+            Your startup fee covers the essential pieces your business needs to look professional and get online.
+          </p>
+          <ul>
+            <li>Initial website build</li>
+            <li>Custom domain registration</li>
+            <li>Professional branded email</li>
+            <li>Brand-aligned setup</li>
+            <li>A clean online foundation built for growth</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>2. Integration</h3>
+          <p><strong>For the first 90 days, you only pay for qualified, exclusive leads.</strong></p>
+          <p>
+            During this phase, there is no monthly retainer. Instead, TideWise Solutions begins building
+            your online presence and driving traffic toward your business.
+          </p>
+          <ul>
+            <li>Social media development</li>
+            <li>Search engine optimization</li>
+            <li>Digital marketing momentum</li>
+            <li>Website traffic growth</li>
+            <li>Qualified lead capture</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>3. Scale</h3>
+          <p><strong>Your long-term pricing scales with real-world results.</strong></p>
+          <p>
+            After the first 90 days, we perform a KPI audit to review performance, traffic, lead volume,
+            engagement, and growth.
+          </p>
+          <ul>
+            <li>90-day KPI audits</li>
+            <li>Retainer pricing based on delivered value</li>
+            <li>Service tiers proportional to lead flow</li>
+            <li>Ongoing optimization</li>
+            <li>Growth without unnecessary early overhead</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="why">
+      <h2 class="section-title">One Partner. Multiple Essential Services. A Smarter Path to Growth.</h2>
+      <p class="section-intro">
+        With TideWise Solutions, you do not need to hire one company to build your website and another
+        company to handle your marketing.
+      </p>
+      <p class="section-intro">
+        We bring both together under one system designed specifically for small service businesses.
+        You get the online foundation, digital strategy, lead generation, and ongoing growth support your
+        business needs — without being buried by high fixed costs before the results are there.
+      </p>
+    </section>
+
+    <section class="services">
+      <h2 class="section-title">Who We Help</h2>
+      <p class="section-intro">
+        TideWise Solutions is built for service businesses that are just starting, growing, or ready to
+        look more professional online.
+      </p>
+
+      <div class="service-list">
+        <div class="service-item">Cleaning Companies</div>
+        <div class="service-item">Handyman Services</div>
+        <div class="service-item">Lawn Care Businesses</div>
+        <div class="service-item">Mobile Detailers</div>
+        <div class="service-item">Pressure Washing Companies</div>
+        <div class="service-item">Massage Therapists</div>
+        <div class="service-item">Beauty & Wellness Providers</div>
+        <div class="service-item">Home Repair Services</div>
+      </div>
+    </section>
+
+    <section class="cta" id="contact">
+      <h2>Build Your Foundation Today. Scale When the Results Are Real.</h2>
+      <p>
+        Your business deserves a professional online presence without being trapped by expensive retainers
+        before the leads start coming in.
+      </p>
+      <a href="mailto:yourname@tidewisesolutions.com" class="btn btn-primary">
+        Talk to TideWise Solutions
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 TideWise Solutions. Web Design + Digital Marketing for Growing Service Businesses.
+  </footer>
+
+</body>
+</html>
