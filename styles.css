@@ -631,4 +631,5 @@ body {
   .pricing-table thead th:nth-child(4),
   .pricing-table tbody td:nth-child(4) { display: none; }
   .tour-guide { flex-direction: column; text-align: center; padding: 28px 24px; gap: 20px; }
+  .lead-box { padding: 20px 16px; }
 }
