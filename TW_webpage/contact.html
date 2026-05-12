@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us | Tidewise Solutions</title>
+  <meta name="description" content="Get in touch with Tidewise Solutions. Let's talk about growing your business." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.tidewisesolutions.com/contact.html" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ── CONTACT PAGE — unique styles ── */
+
+    /* Teal bar — brand name */
+    .contact-header-brand {
+      background: var(--teal-dark);
+      text-align: center;
+      padding: 28px 24px;
+    }
+    .contact-header-brand .brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--white);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* White bar — tagline */
+    .contact-header-tagline {
+      background: var(--white);
+      text-align: center;
+      padding: 18px 24px;
+      border-top: 3px solid var(--teal-dark);
+      border-bottom: 3px solid var(--teal-dark);
+    }
+    .contact-header-tagline p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      color: var(--teal-dark);
+      letter-spacing: 0.03em;
+    }
+    .contact-header-tagline p em {
+      color: var(--orange);
+      font-style: normal;
+    }
+
+    /* ── CONTACT LAYOUT ── */
+    .contact-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* ── FORM SIDE ── */
+    .form-side h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--teal-dark);
+      margin-bottom: 8px;
+    }
+    .form-side .form-intro {
+      font-size: 0.93rem;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--teal-mid);
+      box-shadow: 0 0 0 3px rgba(30,157,184,0.12);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Two column row */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ── BUSINESS NUMBER TOGGLE ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .toggle-row label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      cursor: pointer;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--teal-mid);
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Hidden fields that appear dynamically */
+    .conditional-field {
+      display: none;
+      margin-bottom: 18px;
+    }
+    .conditional-field.visible {
+      display: block;
+    }
+
+    /* ── SUBMIT BUTTON ── */
+    .submit-btn {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 14px 40px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background: var(--orange-dark);
+      transform: translateY(-2px);
+    }
+
+    /* ── OGGY SIDE ── */
+    .oggy-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 32px;
+    }
+    .oggy-side img {
+      width: 100%;
+      max-width: 400px;
+      filter: drop-shadow(0 12px 24px rgba(26,110,126,0.15));
+    }
+
+    /* ── SUCCESS MESSAGE ── */
+    .success-msg {
+      display: none;
+      background: #e4f4f2;
+      border-left: 5px solid var(--teal-mid);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--teal-dark);
+      font-size: 0.95rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .contact-wrap {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .oggy-side {
+        position: static;
+        order: -1;
+      }
+      .oggy-side img {
+        max-width: 280px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="contact-header-brand">
+    <div class="brand">Tidewise Solutions</div>
+  </header>
+  <div class="contact-header-tagline">
+    <p>The tide is rising. Read it. Ride it. <em>Or get swept away.</em></p>
+  </div>
+
+  <!-- CONTACT LAYOUT -->
+  <div class="contact-wrap">
+
+    <!-- FORM SIDE -->
+    <div class="form-side">
+      <h2>Let's Talk About Your Growth.</h2>
+      <p class="form-intro">Fill out the form below and we'll be in touch shortly. The more you tell us, the better we can tailor a solution for your business.</p>
+
+      <form id="contactForm" action="https://formsubmit.co/neal@tidewisesolutions.com" method="POST">
+
+        <!-- FormSubmit config -->
+        <input type="hidden" name="_subject" value="New Tidewise Solutions Inquiry" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_next" value="https://www.tidewisesolutions.com/thankyou.html" />
+
+        <!-- Contact Name -->
+        <div class="form-group">
+          <label for="contact-name">Your Name *</label>
+          <input type="text" id="contact-name" name="Contact Name" placeholder="First and last name" required />
+        </div>
+
+        <!-- Business Name -->
+        <div class="form-group">
+          <label for="business-name">Business Name *</label>
+          <input type="text" id="business-name" name="Business Name" placeholder="Your business name" required />
+        </div>
+
+        <!-- Type of Business -->
+        <div class="form-group">
+          <label for="business-type">Type of Business *</label>
+          <input type="text" id="business-type" name="Type of Business" placeholder="e.g. Cleaning Service, Restaurant, Retail..." required />
+        </div>
+
+        <!-- Contact Number -->
+        <div class="form-group">
+          <label for="contact-phone">Contact Number *</label>
+          <input type="tel" id="contact-phone" name="Contact Number" placeholder="(xxx) xxx-xxxx" required />
+        </div>
+
+        <!-- Business Number Toggle -->
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="biz-number-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+          <label for="biz-number-toggle">My business has a separate phone number</label>
+        </div>
+
+        <!-- Business Number (conditional) -->
+        <div class="conditional-field" id="biz-number-field">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="business-phone">Business Number</label>
+            <input type="tel" id="business-phone" name="Business Number" placeholder="(xxx) xxx-xxxx" />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="Email" placeholder="you@yourbusiness.com" required />
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <label for="address">Street Address</label>
+          <input type="text" id="address" name="Street Address" placeholder="123 Main St" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="City" placeholder="City" />
+          </div>
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" name="State" placeholder="State" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="zip">ZIP Code</label>
+            <input type="text" id="zip" name="ZIP" placeholder="xxxxx" />
+          </div>
+          <div class="form-group">
+            <label for="employees"># of Employees</label>
+            <input type="number" id="employees" name="Employees" placeholder="e.g. 5" min="1" />
+          </div>
+        </div>
+
+        <!-- Years in Business -->
+        <div class="form-group">
+          <label for="years">Years in Business *</label>
+          <select id="years" name="Years in Business" required>
+            <option value="" disabled selected>Select one...</option>
+            <option value="Start-up">Start-up</option>
+            <option value="Less than 6 months">Less than 6 months</option>
+            <option value="6 months to a year">6 months to a year</option>
+            <option value="1 year">1 year</option>
+            <option value="2-5 years">2–5 years</option>
+            <option value="5-10 years">5–10 years</option>
+            <option value="10-20 years">10–20 years</option>
+            <option value="20+ years">20+ years</option>
+          </select>
+        </div>
+
+        <!-- Annual Revenue (conditional) -->
+        <div class="conditional-field" id="revenue-field">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="revenue">Approximate Annual Revenue</label>
+            <select id="revenue" name="Annual Revenue">
+              <option value="" disabled selected>Select a range...</option>
+              <option value="Under $100k">Under $100k</option>
+              <option value="$100k - $250k">$100k – $250k</option>
+              <option value="$250k - $500k">$250k – $500k</option>
+              <option value="$500k - $1M">$500k – $1M</option>
+              <option value="$1M - $5M">$1M – $5M</option>
+              <option value="$5M+">$5M+</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="form-group" style="margin-top:8px;">
+          <label for="message">Anything else you'd like us to know?</label>
+          <textarea id="message" name="Message" placeholder="Tell us about your business, your goals, your challenges..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Send My Information →</button>
+
+        <div class="success-msg" id="successMsg">
+          ✓ Thanks! We'll be in touch with you shortly.
+        </div>
+
+      </form>
+    </div>
+
+    <!-- OGGY SIDE -->
+    <div class="oggy-side">
+      <img src="ufoggie_ride.png" alt="Oggy the Octopus holding a sign that says Let's Ride — Tidewise Solutions mascot" />
+    </div>
+
+  </div><!-- /.contact-wrap -->
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <div class="footer-bottom">
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="compare.html">Compare</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <p class="footer-copy">© 2026 Tidewise Solutions. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Business number toggle
+    const bizToggle = document.getElementById('biz-number-toggle');
+    const bizField = document.getElementById('biz-number-field');
+    bizToggle.addEventListener('change', function() {
+      bizField.classList.toggle('visible', this.checked);
+    });
+
+    // Years in business — show revenue field if over 1 year
+    const yearsSelect = document.getElementById('years');
+    const revenueField = document.getElementById('revenue-field');
+    const overOneYear = ['2-5 years', '5-10 years', '10-20 years', '20+ years'];
+    yearsSelect.addEventListener('change', function() {
+      revenueField.classList.toggle('visible', overOneYear.includes(this.value));
+    });
+  </script>
+
+</body>
+</html>
