@@ -630,11 +630,9 @@ body {
   .footer-top { flex-direction: column; text-align: center; }
   .pricing-table thead th:nth-child(4),
   .pricing-table tbody td:nth-child(4) { display: none; }
-  .tour-guide { flex-direction: row-reverse; text-align: left; padding: 20px 16px; gap: 12px; align-items: center; }
-  .compass-wrap { width: 90px; height: 90px; margin-left: 0; flex-shrink: 0; }
-  .compass-face { width: 90px; height: 90px; }
-  .compass-needle { width: 90px; height: 90px; }
+  .tour-guide { flex-direction: column; text-align: center; padding: 28px 24px; gap: 20px; align-items: center; }
+  .compass-wrap { margin-left: 0; }
   .tour-guide-content { margin-left: 0; }
-  .lead-box { padding: 20px 16px; }
-  .lead-compare { margin-left: 16px; margin-right: 16px; }
+  .lead-box { padding: 20px 16px; box-sizing: border-box; width: 100%; }
+  .lead-compare { box-sizing: border-box; }
 }
