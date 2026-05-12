@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us | Tidewise Solutions</title>
+  <meta name="description" content="Get in touch with Tidewise Solutions. Let's talk about growing your business." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.tidewisesolutions.com/contact.html" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ── CONTACT PAGE — unique styles ── */
+
+    /* Teal bar — brand name */
+    .contact-header-brand {
+      background: var(--teal-dark);
+      text-align: center;
+      padding: 28px 24px;
+    }
+    .contact-header-brand .brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--white);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* White bar — tagline */
+    .contact-header-tagline {
+      background: var(--white);
+      text-align: center;
+      padding: 18px 24px;
+      border-top: 3px solid var(--teal-dark);
+      border-bottom: 3px solid var(--teal-dark);
+    }
+    .contact-header-tagline p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      color: var(--teal-dark);
+      letter-spacing: 0.03em;
+    }
+    .contact-header-tagline p em {
+      color: var(--orange);
+      font-style: normal;
+    }
+
+    /* ── CONTACT LAYOUT ── */
+    .contact-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* ── FORM SIDE ── */
+    .form-side h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--teal-dark);
+      margin-bottom: 8px;
+    }
+    .form-side .form-intro {
+      font-size: 0.93rem;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--teal-mid);
+      box-shadow: 0 0 0 3px rgba(30,157,184,0.12);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Two column row */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ── BUSINESS NUMBER TOGGLE ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .toggle-row label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      cursor: pointer;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--teal-mid);
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Hidden fields that appear dynamically */
+    .conditional-field {
+      display: none;
+      margin-bottom: 18px;
+    }
+    .conditional-field.visible {
+      display: block;
+    }
+
+    /* ── SUBMIT BUTTON ── */
+    .submit-btn {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 14px 40px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background: var(--orange-dark);
+      transform: translateY(-2px);
+    }
+
+    /* ── OGGY SIDE ── */
+    .oggy-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 32px;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.4s ease-in 0.3s;
+    }
+    .oggy-side.hidden {
+      transform: translateY(600px);
+      opacity: 0;
+    }
+    .oggy-side img {
+      width: 100%;
+      max-width: 400px;
+      filter: drop-shadow(0 12px 24px rgba(26,110,126,0.15));
+    }
+
+    /* ── SUCCESS MESSAGE ── */
+    .success-msg {
+      display: none;
+      background: #e4f4f2;
+      border-left: 5px solid var(--teal-mid);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--teal-dark);
+      font-size: 0.95rem;
+    }
+
+    /* ── PRIVACY DRAWER ── */
+    .privacy-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      box-shadow: 0 -8px 32px rgba(26,110,126,0.18);
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0;
+      transform: translateY(100%);
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+    }
+    .privacy-drawer.open {
+      transform: translateY(0);
+    }
+    .privacy-drawer h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.05rem;
+      color: var(--teal-dark);
+      margin-bottom: 20px;
+    }
+    .privacy-drawer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .privacy-drawer ul li {
+      font-size: 0.92rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      padding-left: 18px;
+      position: relative;
+    }
+    .privacy-drawer ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--teal-mid);
+    }
+    .drawer-close {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--white);
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      z-index: 10;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      transition: color 0.2s;
+    }
+    .drawer-close:hover { color: var(--sand); }
+    .drawer-wave-banner {
+      position: relative;
+      width: 100%;
+      height: 80px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .wave-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+    }
+    .wave-layer svg {
+      width: 100%;
+      height: 100%;
+    }
+    .wave-layer-1 { animation: waveMove 12s linear infinite; }
+    .wave-layer-2 { animation: waveMove 8s linear infinite reverse; }
+    .wave-layer-3 { animation: waveMove 5s linear infinite; }
+    @keyframes waveMove {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .drawer-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px 48px;
+    }
+    .privacy-btn {
+      background: none;
+      border: none;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.83rem;
+      color: #4E8089;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 6px;
+      transition: color 0.2s;
+    }
+    .privacy-btn:hover { color: var(--teal-mid); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .contact-wrap {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .oggy-side {
+        position: static;
+        order: -1;
+      }
+      .oggy-side img {
+        max-width: 280px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="contact-header-brand">
+    <div class="brand">Tidewise Solutions</div>
+  </header>
+  <div class="contact-header-tagline">
+    <p>The tide is rising. Read it. Ride it. <em>Or get swept away.</em></p>
+  </div>
+
+  <!-- CONTACT LAYOUT -->
+  <div class="contact-wrap">
+
+    <!-- FORM SIDE -->
+    <div class="form-side">
+      <h2>Let's Talk About Your Growth.</h2>
+      <p class="form-intro">Fill out the form below and we'll be in touch shortly. The more you tell us, the better we can tailor a solution for your business.</p>
+
+      <form id="contactForm" action="https://formsubmit.co/neal@tidewisesolutions.com" method="POST">
+
+        <!-- FormSubmit config -->
+        <input type="hidden" name="_subject" value="New Tidewise Solutions Inquiry" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_next" value="https://www.tidewisesolutions.com/thankyou.html" />
+
+        <!-- Contact Name -->
+        <div class="form-group">
+          <label for="contact-name">Your Name *</label>
+          <input type="text" id="contact-name" name="Contact Name" placeholder="First and last name" required />
+        </div>
+
+        <!-- Business Name -->
+        <div class="form-group">
+          <label for="business-name">Business Name *</label>
+          <input type="text" id="business-name" name="Business Name" placeholder="Your business name" required />
+        </div>
+
+        <!-- Type of Business -->
+        <div class="form-group">
+          <label for="business-type">Type of Business *</label>
+          <input type="text" id="business-type" name="Type of Business" placeholder="e.g. Cleaning Service, Restaurant, Retail..." required />
+        </div>
+
+        <!-- Contact Number -->
+        <div class="form-group">
+          <label for="contact-phone">Contact Number *</label>
+          <input type="tel" id="contact-phone" name="Contact Number" placeholder="(xxx) xxx-xxxx" required />
+        </div>
+
+        <!-- Business Number Toggle -->
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="biz-number-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+          <label for="biz-number-toggle">My business has a separate phone number</label>
+        </div>
+
+        <!-- Business Number (conditional) -->
+        <div class="conditional-field" id="biz-number-field">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="business-phone">Business Number</label>
+            <input type="tel" id="business-phone" name="Business Number" placeholder="(xxx) xxx-xxxx" />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="Email" placeholder="you@yourbusiness.com" required />
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <label for="address">Street Address</label>
+          <input type="text" id="address" name="Street Address" placeholder="123 Main St" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="City" placeholder="City" />
+          </div>
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" name="State" placeholder="State" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="zip">ZIP Code</label>
+            <input type="text" id="zip" name="ZIP" placeholder="xxxxx" />
+          </div>
+          <div class="form-group">
+            <label for="employees"># of Employees</label>
+            <input type="number" id="employees" name="Employees" placeholder="e.g. 5" min="1" />
+          </div>
+        </div>
+
+        <!-- Years in Business -->
+        <div class="form-group">
+          <label for="years">Years in Business *</label>
+          <select id="years" name="Years in Business" required>
+            <option value="" disabled selected>Select one...</option>
+            <option value="Start-up">Start-up</option>
+            <option value="Less than 6 months">Less than 6 months</option>
+            <option value="6 months to a year">6 months to a year</option>
+            <option value="1 year">1 year</option>
+            <option value="2-5 years">2–5 years</option>
+            <option value="5-10 years">5–10 years</option>
+            <option value="10-20 years">10–20 years</option>
+            <option value="20+ years">20+ years</option>
+          </select>
+        </div>
+
+        <!-- Annual Revenue (conditional) -->
+        <div class="conditional-field" id="revenue-field">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="revenue">Approximate Annual Revenue</label>
+            <select id="revenue" name="Annual Revenue">
+              <option value="" disabled selected>Select a range...</option>
+              <option value="Under $100k">Under $100k</option>
+              <option value="$100k - $250k">$100k – $250k</option>
+              <option value="$250k - $500k">$250k – $500k</option>
+              <option value="$500k - $1M">$500k – $1M</option>
+              <option value="$1M - $5M">$1M – $5M</option>
+              <option value="$5M+">$5M+</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="form-group" style="margin-top:8px;">
+          <label for="message">Anything else you'd like us to know?</label>
+          <textarea id="message" name="Message" placeholder="Tell us about your business, your goals, your challenges..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Send My Information →</button>
+
+        <div class="success-msg" id="successMsg">
+          ✓ Thanks! We'll be in touch with you shortly.
+        </div>
+
+      </form>
+    </div>
+
+    <!-- OGGY SIDE -->
+    <div class="oggy-side">
+      <img src="ufoggie_ride.png" alt="Oggy the Octopus holding a sign that says Let's Ride — Tidewise Solutions mascot" />
+    </div>
+
+  </div><!-- /.contact-wrap -->
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <div class="footer-bottom">
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="compare.html">Compare</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" aria-label="LinkedIn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Tidewise Solutions. All rights reserved.</p>
+    <button class="privacy-btn" id="privacyBtn">Privacy Policy</button>
+  </footer>
+
+  <!-- PRIVACY POLICY DRAWER -->
+  <div class="privacy-drawer" id="privacyDrawer">
+
+    <!-- Animated wave banner — the ocean surface -->
+    <div class="drawer-wave-banner">
+      <div class="wave-layer wave-layer-1">
+        <svg viewBox="0 0 2880 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="rgba(26,110,126,0.35)" d="M0,50 C240,80 480,20 720,50 C960,80 1200,20 1440,50 C1680,80 1920,20 2160,50 C2400,80 2640,20 2880,50 L2880,80 L0,80 Z"/>
+        </svg>
+      </div>
+      <div class="wave-layer wave-layer-2">
+        <svg viewBox="0 0 2880 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="rgba(30,157,184,0.55)" d="M0,35 C360,70 720,5 1080,35 C1440,70 1800,5 2160,35 C2520,70 2880,5 2880,35 L2880,80 L0,80 Z"/>
+        </svg>
+      </div>
+      <div class="wave-layer wave-layer-3">
+        <svg viewBox="0 0 2880 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="rgba(26,110,126,0.88)" d="M0,55 C180,25 540,75 720,55 C900,25 1260,75 1440,55 C1620,25 1980,75 2160,55 C2340,25 2700,75 2880,55 L2880,80 L0,80 Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Close button floats over wave -->
+    <button class="drawer-close" id="drawerClose">✕</button>
+
+    <!-- Scrollable policy content -->
+    <div class="drawer-content">
+      <h3>Tidewise Solutions Privacy Policy — Effective 2026</h3>
+      <ul>
+        <li>We collect only the information you submit through our contact form: name, business name, contact details, and your message.</li>
+        <li>We use this information solely to respond to your inquiry and provide our services.</li>
+        <li>We do not sell, share, or distribute your information to third parties.</li>
+        <li>Form submissions are stored securely and accessible only to Tidewise Solutions.</li>
+        <li>You may request deletion of your information at any time by emailing <a href="#" class="protected-email" data-u="neal" data-d="tidewisesolutions.com" style="color: var(--teal-mid);">neal&#64;tidewisesolutions&#46;com</a>.</li>
+        <li>This site uses no tracking cookies or third-party analytics.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    // Business number toggle
+    const bizToggle = document.getElementById('biz-number-toggle');
+    const bizField = document.getElementById('biz-number-field');
+    bizToggle.addEventListener('change', function() {
+      bizField.classList.toggle('visible', this.checked);
+    });
+
+    // Years in business — show revenue field if over 1 year
+    const yearsSelect = document.getElementById('years');
+    const revenueField = document.getElementById('revenue-field');
+    const overOneYear = ['2-5 years', '5-10 years', '10-20 years', '20+ years'];
+    yearsSelect.addEventListener('change', function() {
+      revenueField.classList.toggle('visible', overOneYear.includes(this.value));
+    });
+
+    // Protected email links
+    document.querySelectorAll('.protected-email').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'mailto:' + el.dataset.u + '@' + el.dataset.d;
+      });
+    });
+
+    // Privacy drawer
+    const privacyBtn = document.getElementById('privacyBtn');
+    const drawerClose = document.getElementById('drawerClose');
+    const privacyDrawer = document.getElementById('privacyDrawer');
+    const oggySide = document.querySelector('.oggy-side');
+
+    privacyBtn.addEventListener('click', function() {
+      privacyDrawer.classList.add('open');
+      oggySide.classList.add('hidden');
+    });
+
+    drawerClose.addEventListener('click', function() {
+      privacyDrawer.classList.remove('open');
+      oggySide.classList.remove('hidden');
+    });
+  </script>
+
+</body>
+</html>
