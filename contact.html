@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,12 +8,13 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://www.tidewisesolutions.com/contact.html" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="oggysmall-120.png">
   <link rel="stylesheet" href="styles.css" />
 
   <style>
-    /* ── CONTACT PAGE — unique styles ── */
+    /* â”€â”€ CONTACT PAGE â€” unique styles â”€â”€ */
 
-    /* Teal bar — brand name */
+    /* Teal bar â€” brand name */
     .contact-header-brand {
       background: var(--teal-dark);
       text-align: center;
@@ -28,7 +29,7 @@
       text-transform: uppercase;
     }
 
-    /* White bar — tagline */
+    /* White bar â€” tagline */
     .contact-header-tagline {
       background: var(--white);
       text-align: center;
@@ -48,7 +49,7 @@
       font-style: normal;
     }
 
-    /* ── CONTACT LAYOUT ── */
+    /* â”€â”€ CONTACT LAYOUT â”€â”€ */
     .contact-wrap {
       max-width: 1100px;
       margin: 0 auto;
@@ -59,7 +60,7 @@
       align-items: start;
     }
 
-    /* ── FORM SIDE ── */
+    /* â”€â”€ FORM SIDE â”€â”€ */
     .form-side h2 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
@@ -74,7 +75,7 @@
       line-height: 1.6;
     }
 
-    /* ── FORM ELEMENTS ── */
+    /* â”€â”€ FORM ELEMENTS â”€â”€ */
     .form-group {
       margin-bottom: 18px;
     }
@@ -120,7 +121,7 @@
       gap: 14px;
     }
 
-    /* ── BUSINESS NUMBER TOGGLE ── */
+    /* â”€â”€ BUSINESS NUMBER TOGGLE â”€â”€ */
     .toggle-row {
       display: flex;
       align-items: center;
@@ -180,7 +181,7 @@
       display: block;
     }
 
-    /* ── SUBMIT BUTTON ── */
+    /* â”€â”€ SUBMIT BUTTON â”€â”€ */
     .submit-btn {
       display: inline-block;
       background: var(--orange);
@@ -203,7 +204,7 @@
       transform: translateY(-2px);
     }
 
-    /* ── OGGY SIDE ── */
+    /* â”€â”€ OGGY SIDE â”€â”€ */
     .oggy-side {
       display: flex;
       flex-direction: column;
@@ -222,7 +223,7 @@
       filter: drop-shadow(0 12px 24px rgba(26,110,126,0.15));
     }
 
-    /* ── SUCCESS MESSAGE ── */
+    /* â”€â”€ SUCCESS MESSAGE â”€â”€ */
     .success-msg {
       display: none;
       background: #e4f4f2;
@@ -236,7 +237,7 @@
       font-size: 0.95rem;
     }
 
-    /* ── PRIVACY DRAWER ── */
+    /* â”€â”€ PRIVACY DRAWER â”€â”€ */
     .privacy-drawer {
       position: fixed;
       bottom: 0;
@@ -279,7 +280,7 @@
       position: relative;
     }
     .privacy-drawer ul li::before {
-      content: '—';
+      content: 'â€”';
       position: absolute;
       left: 0;
       color: var(--teal-mid);
@@ -352,7 +353,7 @@
       border-color: var(--teal-mid);
     }
 
-    /* ── RESPONSIVE ── */
+    /* â”€â”€ RESPONSIVE â”€â”€ */
     @media (max-width: 860px) {
       .contact-wrap {
         grid-template-columns: 1fr;
@@ -400,8 +401,12 @@
 
         <!-- Contact Name -->
         <div class="form-group">
-          <label for="contact-name">Your Name *</label>
-          <input type="text" id="contact-name" name="Contact Name" placeholder="First and last name" required />
+          <label for="first-name">First Name *</label>
+          <input type="text" id="first-name" name="First Name" placeholder="First name" required />
+        </div>
+        <div class="form-group">
+          <label for="last-name">Last Name *</label>
+          <input type="text" id="last-name" name="Last Name" placeholder="Last name" required />
         </div>
 
         <!-- Business Name -->
@@ -436,6 +441,22 @@
           <div class="form-group" style="margin-bottom:0;">
             <label for="business-phone">Business Number</label>
             <input type="tel" id="business-phone" name="Business Number" placeholder="(xxx) xxx-xxxx" />
+          </div>
+        </div>
+
+        <!-- Website Toggle -->
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="website-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+          <label for="website-toggle">I already have a website</label>
+        </div>
+
+        <div class="conditional-field" id="website-field">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="current-website">Current Website URL</label>
+            <input type="url" id="current-website" name="Current Website" placeholder="https://yoursite.com" />
           </div>
         </div>
 
@@ -482,9 +503,9 @@
             <option value="Less than 6 months">Less than 6 months</option>
             <option value="6 months to a year">6 months to a year</option>
             <option value="1 year">1 year</option>
-            <option value="2-5 years">2–5 years</option>
-            <option value="5-10 years">5–10 years</option>
-            <option value="10-20 years">10–20 years</option>
+            <option value="2-5 years">2â€“5 years</option>
+            <option value="5-10 years">5â€“10 years</option>
+            <option value="10-20 years">10â€“20 years</option>
             <option value="20+ years">20+ years</option>
           </select>
         </div>
@@ -494,14 +515,16 @@
           <div class="form-group" style="margin-bottom:0;">
             <label for="revenue">Approximate Annual Revenue</label>
             <select id="revenue" name="Annual Revenue">
-              <option value="" disabled selected>Select a range...</option>
-              <option value="Under $100k">Under $100k</option>
-              <option value="$100k - $250k">$100k – $250k</option>
-              <option value="$250k - $500k">$250k – $500k</option>
-              <option value="$500k - $1M">$500k – $1M</option>
-              <option value="$1M - $5M">$1M – $5M</option>
-              <option value="$5M+">$5M+</option>
-              <option value="Prefer not to say">Prefer not to say</option>
+              <option value=”” disabled selected>Select a range...</option>
+              <option value=”Below $25k”>Below $25k</option>
+              <option value=”$25k - $50k”>$25k – $50k</option>
+              <option value=”$50k - $100k”>$50k – $100k</option>
+              <option value=”$100k - $250k”>$100k – $250k</option>
+              <option value=”$250k - $500k”>$250k – $500k</option>
+              <option value=”$500k - $1M”>$500k – $1M</option>
+              <option value=”$1M - $5M”>$1M – $5M</option>
+              <option value=”$5M+”>$5M+</option>
+              <option value=”Prefer not to say”>Prefer not to say</option>
             </select>
           </div>
         </div>
@@ -512,10 +535,10 @@
           <textarea id="message" name="Message" placeholder="Tell us about your business, your goals, your challenges..."></textarea>
         </div>
 
-        <button type="submit" class="submit-btn">Send My Information →</button>
+        <button type="submit" class="submit-btn">Send My Information â†’</button>
 
         <div class="success-msg" id="successMsg">
-          ✓ Thanks! We'll be in touch with you shortly.
+          âœ“ Thanks! We'll be in touch with you shortly.
         </div>
 
       </form>
@@ -523,7 +546,7 @@
 
     <!-- OGGY SIDE -->
     <div class="oggy-side">
-      <img src="ufoggie_ride.png" alt="Oggy the Octopus holding a sign that says Let's Ride — Tidewise Solutions mascot" />
+      <img src="ufoggie_ride.png" alt="Oggy the Octopus holding a sign that says Let's Ride â€” Tidewise Solutions mascot" />
     </div>
 
   </div><!-- /.contact-wrap -->
@@ -539,14 +562,14 @@
         <a href="contact.html">Contact</a>
       </nav>
     </div>
-    <p class="footer-copy">© 2026 Tidewise Solutions. All rights reserved.</p>
+    <p class="footer-copy">Â© 2026 Tidewise Solutions. All rights reserved.</p>
     <button class="privacy-btn" id="privacyBtn">Privacy Policy</button>
   </footer>
 
   <!-- PRIVACY POLICY DRAWER -->
   <div class="privacy-drawer" id="privacyDrawer">
 
-    <!-- Animated wave banner — the ocean surface -->
+    <!-- Animated wave banner â€” the ocean surface -->
     <div class="drawer-wave-banner">
       <div class="wave-layer wave-layer-1">
         <svg viewBox="0 0 2880 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -566,11 +589,11 @@
     </div>
 
     <!-- Close button floats over wave -->
-    <button class="drawer-close" id="drawerClose">✕</button>
+    <button class="drawer-close" id="drawerClose">âœ•</button>
 
     <!-- Scrollable policy content -->
     <div class="drawer-content">
-      <h3>Tidewise Solutions Privacy Policy — Effective 2026</h3>
+      <h3>Tidewise Solutions Privacy Policy â€” Effective 2026</h3>
       <ul>
         <li>We collect only the information you submit through our contact form: name, business name, contact details, and your message.</li>
         <li>We use this information solely to respond to your inquiry and provide our services.</li>
@@ -584,6 +607,13 @@
   </div>
 
   <script>
+    // Website toggle
+    const websiteToggle = document.getElementById('website-toggle');
+    const websiteField  = document.getElementById('website-field');
+    websiteToggle.addEventListener('change', function() {
+      websiteField.classList.toggle('visible', this.checked);
+    });
+
     // Business number toggle
     const bizToggle = document.getElementById('biz-number-toggle');
     const bizField = document.getElementById('biz-number-field');
@@ -591,7 +621,7 @@
       bizField.classList.toggle('visible', this.checked);
     });
 
-    // Years in business — show revenue field if over 1 year
+    // Years in business â€” show revenue field if over 1 year
     const yearsSelect = document.getElementById('years');
     const revenueField = document.getElementById('revenue-field');
     const overOneYear = ['2-5 years', '5-10 years', '10-20 years', '20+ years'];
@@ -626,3 +656,4 @@
 
 </body>
 </html>
+

@@ -438,7 +438,9 @@ body {
   padding: 4px 10px;
   border-radius: 20px;
   display: inline-block;
-  width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
 }
 .lead-box.tidewise .badge {
   background: var(--orange);
