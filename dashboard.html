@@ -113,7 +113,7 @@
     .pw-welcome {
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-size: clamp(2.4rem, 6vw, 3.4rem);
       color: var(--sand);
       letter-spacing: -0.01em;
       margin-bottom: 0.3rem;
@@ -122,7 +122,7 @@
 
     .pw-eyebrow {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
+      font-size: 0.95rem;
       letter-spacing: 0.22em;
       color: var(--coral);
       text-transform: uppercase;
@@ -137,7 +137,7 @@
       border-radius: 16px;
       padding: 2rem;
       width: 100%;
-      max-width: 310px;
+      max-width: 400px;
       box-shadow:
         0 0 0 1px rgba(255,123,107,0.08),
         0 24px 64px rgba(0,0,0,0.5),
@@ -152,7 +152,7 @@
       border-radius: 9px;
       color: var(--text);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.95rem;
+      font-size: 1.15rem;
       letter-spacing: 0.2em;
       margin-bottom: 0.9rem;
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -171,7 +171,7 @@
       color: #fff;
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 1.05rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       border: none;
@@ -190,7 +190,7 @@
       margin-top: 0.75rem;
       color: var(--coral);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
+      font-size: 1rem;
     }
 
     /* ── Dashboard ────────────────────────────────────────────── */
@@ -202,7 +202,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 2rem;
-      height: 58px;
+      height: 76px;
       border-bottom: 1px solid var(--coral-border);
       background: rgba(7,19,26,0.9);
       backdrop-filter: blur(16px);
@@ -227,16 +227,16 @@
     }
 
     .brand-logo {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
       background: linear-gradient(135deg, var(--teal), var(--coral));
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 0.7rem;
+      font-size: 0.95rem;
       color: #fff;
       letter-spacing: -0.02em;
     }
@@ -244,7 +244,7 @@
     .brand-text {
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 0.95rem;
+      font-size: 1.2rem;
       color: var(--sand);
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -252,7 +252,7 @@
 
     .brand-text span {
       display: block;
-      font-size: 0.55rem;
+      font-size: 0.75rem;
       color: var(--coral);
       letter-spacing: 0.18em;
       font-weight: 600;
@@ -263,7 +263,7 @@
 
     .header-clock {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
+      font-size: 1rem;
       color: var(--text-dim);
       letter-spacing: 0.06em;
     }
@@ -274,10 +274,10 @@
       color: var(--coral);
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.65rem;
+      font-size: 0.9rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 0.35rem 0.9rem;
+      padding: 0.5rem 1.1rem;
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s;
@@ -323,7 +323,7 @@
 
     .stat-eyebrow {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.62rem;
+      font-size: 0.85rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--coral);
@@ -334,7 +334,7 @@
     .stat-num {
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 2.4rem;
+      font-size: 3rem;
       color: var(--sand);
       line-height: 1;
       margin-bottom: 0.6rem;
@@ -345,7 +345,7 @@
     .stat-money {
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 2rem;
+      font-size: 2.6rem;
       color: var(--green);
       line-height: 1;
       margin-bottom: 0.55rem;
@@ -356,17 +356,17 @@
     .stat-breakdown {
       display: flex;
       gap: 0.9rem;
-      font-size: 0.72rem;
+      font-size: 0.92rem;
       color: var(--text-dim);
     }
 
     .stat-breakdown .item { display: flex; flex-direction: column; gap: 0.1rem; }
-    .stat-breakdown strong { color: var(--text-mid); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; }
-    .stat-breakdown .dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .stat-breakdown strong { color: var(--text-mid); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; }
+    .stat-breakdown .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
     .dot-booking { background: var(--teal); }
     .dot-project { background: var(--coral); }
 
-    .stat-note { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.4rem; font-family: 'JetBrains Mono', monospace; }
+    .stat-note { font-size: 0.9rem; color: var(--text-dim); margin-top: 0.4rem; font-family: 'JetBrains Mono', monospace; }
 
     /* ── Feed ─────────────────────────────────────────────────── */
     .feed-wrap {
@@ -400,7 +400,7 @@
 
     .feed-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
+      font-size: 0.9rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -408,15 +408,15 @@
 
     .feed-count {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
+      font-size: 0.9rem;
       color: var(--text-dim);
     }
 
     .feed-list { max-height: 160px; overflow-y: auto; }
 
     .feed-item {
-      padding: 0.48rem 1.25rem;
-      font-size: 0.82rem;
+      padding: 0.6rem 1.25rem;
+      font-size: 1.05rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -439,13 +439,13 @@
 
     .feed-msg { color: var(--text); flex: 1; }
     .feed-msg .feed-client { color: var(--teal); font-weight: 600; }
-    .feed-time { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); flex-shrink: 0; }
-    .feed-empty { padding: 1.1rem 1.25rem; color: var(--text-dim); font-size: 0.82rem; font-style: italic; }
+    .feed-time { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: var(--text-dim); flex-shrink: 0; }
+    .feed-empty { padding: 1.1rem 1.25rem; color: var(--text-dim); font-size: 1rem; font-style: italic; }
 
     /* ── Clients section ──────────────────────────────────────── */
     .section-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.62rem;
+      font-size: 0.88rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -511,7 +511,7 @@
     .client-name {
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 1.25rem;
       color: var(--text);
       margin-bottom: 0.4rem;
       letter-spacing: 0.01em;
@@ -522,11 +522,11 @@
     .chip {
       display: inline-flex;
       align-items: center;
-      padding: 0.18rem 0.55rem;
+      padding: 0.25rem 0.7rem;
       border-radius: 999px;
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.6rem;
+      font-size: 0.82rem;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       border: 1px solid;
@@ -538,19 +538,19 @@
     .tier-chip {
       display: inline-flex;
       align-items: center;
-      padding: 0.18rem 0.55rem;
+      padding: 0.25rem 0.7rem;
       border-radius: 999px;
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.6rem;
+      font-size: 0.82rem;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       border: 1px solid;
     }
 
     .client-count { text-align: right; flex-shrink: 0; padding-right: 2.5rem; }
-    .client-count .big { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2rem; color: var(--sand); line-height: 1; text-shadow: 0 0 24px rgba(245,217,138,0.2); }
-    .client-count .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.08em; }
+    .client-count .big { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.6rem; color: var(--sand); line-height: 1; text-shadow: 0 0 24px rgba(245,217,138,0.2); }
+    .client-count .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: var(--text-dim); letter-spacing: 0.08em; }
 
     /* ── Detail Overlay ───────────────────────────────────────── */
     .detail-overlay {
@@ -596,7 +596,7 @@
     .detail-client-name {
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 1.5rem;
+      font-size: 1.9rem;
       color: var(--sand);
       letter-spacing: -0.01em;
       margin-bottom: 0.5rem;
@@ -609,10 +609,10 @@
       color: var(--coral);
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.68rem;
+      font-size: 0.92rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 0.45rem 1rem;
+      padding: 0.55rem 1.25rem;
       border-radius: 7px;
       cursor: pointer;
       flex-shrink: 0;
@@ -648,13 +648,13 @@
       opacity: 0.4;
     }
 
-    .dstat .num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.7rem; color: var(--sand); }
-    .dstat .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-top: 0.25rem; }
+    .dstat .num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--sand); }
+    .dstat .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-top: 0.25rem; }
 
     /* Monthly grid */
     .sub-heading {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.62rem;
+      font-size: 0.88rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -687,8 +687,8 @@
     .month-cell.peak { border-color: rgba(245,217,138,0.35); background: var(--sand-dim); }
     .month-cell.selected { border-color: var(--coral); background: var(--coral-glow); box-shadow: 0 0 12px rgba(255,123,107,0.15); }
 
-    .month-cell .m-num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; color: var(--sand); line-height: 1; }
-    .month-cell .m-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--text-dim); margin-top: 0.2rem; letter-spacing: 0.04em; }
+    .month-cell .m-num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.65rem; color: var(--sand); line-height: 1; }
+    .month-cell .m-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem; letter-spacing: 0.04em; }
     .month-cell.peak .m-lbl { color: rgba(245,217,138,0.6); }
 
     /* Toolbar */
@@ -705,8 +705,8 @@
       border-radius: 8px;
       color: var(--text);
       font-family: 'Open Sans', sans-serif;
-      font-size: 0.83rem;
-      padding: 0.5rem 0.85rem;
+      font-size: 1.05rem;
+      padding: 0.6rem 1rem;
       transition: border-color 0.18s;
     }
 
@@ -716,13 +716,13 @@
     .month-select option { background: #0c1e2b; }
 
     /* Lead table */
-    .leads-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .leads-table { width: 100%; border-collapse: collapse; font-size: 1rem; }
 
     .leads-table thead th {
       text-align: left;
-      padding: 0.55rem 0.75rem;
+      padding: 0.7rem 0.85rem;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.58rem;
+      font-size: 0.82rem;
       letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -737,16 +737,16 @@
     .leads-table tbody tr:hover { background: rgba(255,255,255,0.02); }
     .leads-table tbody tr.row-disputed { background: rgba(245,158,11,0.06); border-left: 2px solid rgba(245,158,11,0.4); }
 
-    .leads-table td { padding: 0.7rem 0.75rem; color: var(--text-mid); vertical-align: top; }
+    .leads-table td { padding: 0.85rem 0.85rem; color: var(--text-mid); vertical-align: top; }
     .leads-table td.td-name { font-weight: 600; color: var(--text); }
 
     .s-pill {
       display: inline-block;
-      padding: 0.18rem 0.5rem;
+      padding: 0.25rem 0.65rem;
       border-radius: 999px;
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.58rem;
+      font-size: 0.8rem;
       letter-spacing: 0.07em;
       text-transform: uppercase;
     }
@@ -757,11 +757,11 @@
     .s-denied   { background: rgba(239,68,68,0.12);  color: #f87171; }
 
     .action-btn {
-      padding: 0.2rem 0.55rem;
+      padding: 0.3rem 0.75rem;
       border-radius: 5px;
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.58rem;
+      font-size: 0.8rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       cursor: pointer;
