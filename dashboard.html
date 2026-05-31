@@ -656,6 +656,45 @@
       50%      { box-shadow: 0 0 18px rgba(61,220,132,0.45); }
     }
 
+    /* ── Dispute management ──────────────────────────────────────── */
+    .disputed-count {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+      color: #fbbf24; background: rgba(245,158,11,0.12);
+      border: 1px solid rgba(245,158,11,0.25); border-radius: 999px;
+      padding: 0.12rem 0.5rem; margin-top: 0.35rem; display: inline-block;
+    }
+
+    .dispute-reason-inline {
+      font-size: 0.8rem; color: #fbbf24; font-style: italic;
+      background: rgba(245,158,11,0.07); border-left: 2px solid rgba(245,158,11,0.5);
+      padding: 0.3rem 0.5rem; margin-bottom: 0.4rem;
+      border-radius: 0 4px 4px 0; max-width: 220px;
+      word-break: break-word; display: block;
+    }
+
+    .mail-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 5px;
+      background: var(--teal-glow); border: 1px solid var(--teal-border);
+      color: var(--teal); text-decoration: none; font-size: 0.9rem;
+      transition: background 0.15s; margin-right: 0.25rem;
+    }
+    .mail-btn:hover { background: rgba(26,184,212,0.25); }
+
+    .undo-btn {
+      padding: 0.25rem 0.6rem; background: transparent;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 5px;
+      color: var(--text-dim); font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.72rem; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+    }
+    .undo-btn:hover { border-color: var(--coral-border); color: var(--text); }
+
+    .leads-table tbody tr.row-invalid {
+      background: rgba(239,68,68,0.04);
+      border-left: 2px solid rgba(239,68,68,0.35);
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -1115,9 +1154,10 @@
     function renderTwCards() {
       const curYM = ymk(new Date());
       document.getElementById('twList').innerHTML = twClients.map(c => {
-        const cl   = allLeads.filter(l => l.client_id === c.client_id);
-        const mo   = cl.filter(l => ymk(new Date(l.created_at)) === curYM).length;
-        const tier = TIERS[c.tier] || TIERS['safe-harbor'];
+        const cl     = allLeads.filter(l => l.client_id === c.client_id);
+        const mo     = cl.filter(l => ymk(new Date(l.created_at)) === curYM).length;
+        const dispCt = cl.filter(l => l.status === 'disputed').length;
+        const tier   = TIERS[c.tier] || TIERS['safe-harbor'];
         const typeChip = c.lead_type === 'project'
           ? `<span class="chip chip-project">Project</span>`
           : `<span class="chip chip-booking">Booking</span>`;
@@ -1140,6 +1180,7 @@
           <div class="client-count">
             <div class="big">${mo}</div>
             <div class="lbl">This Month</div>
+            ${dispCt > 0 ? `<div class="disputed-count">⚑ ${dispCt} disputed</div>` : ''}
           </div>
         </div>`;
       }).join('') || '<div style="color:var(--text-dim);font-size:0.95rem;padding:1rem 0;">No Tidewise clients yet. Hit + to add one.</div>';
@@ -1358,26 +1399,60 @@
         return;
       }
       tbody.innerHTML = rows.map(l => {
-        const date = new Date(l.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-        const disputed = l.status === 'disputed';
-        const resolved = l.status === 'approved' || l.status === 'denied';
+        const date      = new Date(l.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+        const disputed  = l.status === 'disputed';
+        const isValid   = l.status === 'valid'   || l.status === 'approved';
+        const isInvalid = l.status === 'invalid' || l.status === 'denied';
+
         let actions = '';
         if (disputed) {
-          actions = `<button class="action-btn btn-confirm" onclick="setStatus('${l.id}','denied')">Confirm Dispute</button>
-                     <button class="action-btn btn-deny"    onclick="setStatus('${l.id}','approved')">Deny Dispute</button>`;
-        } else if (!resolved) {
-          actions = `<button class="action-btn btn-approve" onclick="setStatus('${l.id}','approved')">Approve</button>`;
+          const reasonHtml = l.dispute_reason
+            ? `<div class="dispute-reason-inline">"${esc(l.dispute_reason)}"</div>`
+            : '';
+          actions = `${reasonHtml}
+            <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
+                    onclick="setStatus('${l.id}','valid')">Mark Valid</button>
+            <button class="action-btn" style="background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.3);"
+                    onclick="setStatus('${l.id}','invalid')">Mark Invalid</button>`;
+        } else if (isValid || isInvalid) {
+          actions = `
+            <a class="mail-btn" href="${buildMailto(l, isValid ? 'valid' : 'invalid')}" title="Email decision">✉</a>
+            <button class="undo-btn" onclick="setStatus('${l.id}','disputed')">↩ Undo</button>`;
         }
-        const msg = (l.message||'—').substring(0,55) + ((l.message||'').length>55?'…':'');
-        return `<tr class="${disputed?'row-disputed':''}">
+
+        const statusMap = {
+          new:      ['New',                 's-new'],
+          disputed: ['Disputed',            's-disputed'],
+          valid:    ['Dispute Rejected ✓',  's-approved'],
+          approved: ['Dispute Rejected ✓',  's-approved'],
+          invalid:  ['Dispute Approved ✗',  's-denied'],
+          denied:   ['Dispute Approved ✗',  's-denied'],
+        };
+        const [statusLabel, statusClass] = statusMap[l.status] || [l.status, 's-new'];
+
+        const msg      = (l.message||'—').substring(0,55) + ((l.message||'').length>55?'…':'');
+        const rowClass = disputed ? 'row-disputed' : isInvalid ? 'row-invalid' : '';
+
+        return `<tr class="${rowClass}">
           <td>${date}</td><td class="td-name">${esc(l.name)}</td>
           <td>${esc(l.project_type||'—')}</td><td>${esc(l.square_footage||'—')}</td>
           <td>${esc(l.traffic_source||'—')}</td>
           <td title="${esc(l.message||'')}">${esc(msg)}</td>
-          <td><span class="s-pill s-${l.status}">${l.status}</span></td>
+          <td><span class="s-pill ${statusClass}">${statusLabel}</span></td>
           <td style="white-space:nowrap;">${actions}</td>
         </tr>`;
       }).join('');
+    }
+
+    function buildMailto(lead, decision) {
+      const isValid = decision === 'valid';
+      const subj = isValid
+        ? `Lead Dispute Rejected — ${lead.name}`
+        : `Lead Dispute Approved — ${lead.name}`;
+      const body = isValid
+        ? `Hi Matt & Justin,\n\nAfter reviewing the dispute for ${lead.name} (${lead.email}), we have determined this lead is valid and will be billed.\n\nProject: ${lead.project_type||'—'}\nSize: ${lead.square_footage||'—'}\n\nThis lead will be included in your invoice.\n\nBest,\nNeal`
+        : `Hi Matt & Justin,\n\nAfter reviewing the dispute for ${lead.name} (${lead.email}), we have determined this lead is invalid and will NOT be billed.\n\nProject: ${lead.project_type||'—'}\nSize: ${lead.square_footage||'—'}\n${lead.dispute_reason?`\nDispute reason: ${lead.dispute_reason}`:''}.\n\nThis lead has been removed from your invoice.\n\nBest,\nNeal`;
+      return `mailto:justin@ccstoib.com,matt@ccstoib.com?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
     }
 
     async function setStatus(id, status) {
