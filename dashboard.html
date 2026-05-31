@@ -1450,8 +1450,8 @@
         ? `Lead Dispute Rejected — ${lead.name}`
         : `Lead Dispute Approved — ${lead.name}`;
       const body = isValid
-        ? `Hi Matt & Justin,\n\nAfter reviewing the dispute for ${lead.name} (${lead.email}), we have determined this lead is valid and will be billed.\n\nProject: ${lead.project_type||'—'}\nSize: ${lead.square_footage||'—'}\n\nThis lead will be included in your invoice.\n\nBest,\nNeal`
-        : `Hi Matt & Justin,\n\nAfter reviewing the dispute for ${lead.name} (${lead.email}), we have determined this lead is invalid and will NOT be billed.\n\nProject: ${lead.project_type||'—'}\nSize: ${lead.square_footage||'—'}\n${lead.dispute_reason?`\nDispute reason: ${lead.dispute_reason}`:''}.\n\nThis lead has been removed from your invoice.\n\nBest,\nNeal`;
+        ? `Hi Matt & Justin,\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was rejected.\n\n`
+        : `Hi Matt & Justin,\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was approved.\n\n`;
       return `mailto:justin@ccstoib.com,matt@ccstoib.com?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
     }
 
