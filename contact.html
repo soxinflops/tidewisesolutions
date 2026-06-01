@@ -258,13 +258,32 @@
       transition: transform 0.7s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.4s ease-in 0.3s;
     }
     .oggy-side.hidden {
-      transform: translateY(600px);
+      transform: translateY(var(--oggy-fall, 600px));
+      opacity: 0;
+    }
+    /* Dunk: break out of layout, fall over the form, sink into the drawer waves */
+    .oggy-side.dunking {
+      position: fixed;
+      top: var(--oggy-start-top);
+      left: var(--oggy-start-left);
+      width: var(--oggy-start-width);
+      z-index: 999;
+      margin: 0;
+      pointer-events: none;
+      transition: transform 0.85s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.35s ease 0.72s;
+    }
+    .oggy-side.dunking.hidden {
       opacity: 0;
     }
     .oggy-side img {
       width: 100%;
       max-width: 400px;
       filter: drop-shadow(0 12px 24px rgba(26,110,126,0.15));
+    }
+
+    .form-side {
+      position: relative;
+      z-index: 1;
     }
 
     /* ── SUCCESS MESSAGE ── */
@@ -695,20 +714,53 @@
       });
     });
 
-    // Privacy drawer
+    // Privacy drawer + Oggy dunk easter egg
     const privacyBtn = document.getElementById('privacyBtn');
     const drawerClose = document.getElementById('drawerClose');
     const privacyDrawer = document.getElementById('privacyDrawer');
     const oggySide = document.querySelector('.oggy-side');
 
+    function getOggyFallDistance() {
+      const rect = oggySide.getBoundingClientRect();
+      // Drawer is 50vh; wave banner (~80px) sits at the top — aim Oggy into the surf
+      const waveSurfaceY = window.innerHeight * 0.5 + 36;
+      return Math.max(480, waveSurfaceY - rect.top + rect.height * 0.4);
+    }
+
+    function pinOggyForDunk() {
+      const rect = oggySide.getBoundingClientRect();
+      oggySide.style.setProperty('--oggy-start-top', rect.top + 'px');
+      oggySide.style.setProperty('--oggy-start-left', rect.left + 'px');
+      oggySide.style.setProperty('--oggy-start-width', rect.width + 'px');
+      oggySide.style.setProperty('--oggy-fall', getOggyFallDistance() + 'px');
+      oggySide.classList.add('dunking');
+    }
+
+    function clearOggyDunkStyles() {
+      oggySide.classList.remove('dunking');
+      oggySide.style.removeProperty('--oggy-start-top');
+      oggySide.style.removeProperty('--oggy-start-left');
+      oggySide.style.removeProperty('--oggy-start-width');
+      oggySide.style.removeProperty('--oggy-fall');
+    }
+
     privacyBtn.addEventListener('click', function() {
+      pinOggyForDunk();
       privacyDrawer.classList.add('open');
-      oggySide.classList.add('hidden');
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          oggySide.classList.add('hidden');
+        });
+      });
     });
 
     drawerClose.addEventListener('click', function() {
       privacyDrawer.classList.remove('open');
       oggySide.classList.remove('hidden');
+      oggySide.addEventListener('transitionend', function onRise(e) {
+        if (e.propertyName !== 'transform') return;
+        clearOggyDunkStyles();
+      }, { once: true });
     });
   </script>
 
