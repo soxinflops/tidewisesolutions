@@ -911,11 +911,18 @@
         </div>
       </div>
 
+      <!-- Presentation shutter — click green dot to open/close -->
+      <div id="shutter">
+        <img src="assets/tidewise-sigil.png" alt="" draggable="false" />
+      </div>
+
+      </div><!-- /financialSection -->
+
       <!-- Live Feed -->
       <div class="feed-wrap">
         <div class="feed-top">
           <div class="feed-top-left">
-            <div class="live-dot"></div>
+            <div class="live-dot" id="shutterTrigger" style="cursor:pointer;"></div>
             <div class="feed-label">Live Activity Feed</div>
           </div>
           <div class="feed-count" id="feedCount"></div>
@@ -925,16 +932,9 @@
         </div>
       </div>
 
-      <!-- Presentation shutter — click "Clients" to open, click anywhere to close -->
-      <div id="shutter">
-        <img src="assets/tidewise-sigil.png" alt="" draggable="false" />
-      </div>
-
-      </div><!-- /financialSection -->
-
       <!-- Clients section -->
       <div class="clients-header">
-        <div class="section-label" id="shutterTrigger" style="cursor:default;user-select:none;">Clients</div>
+        <div class="section-label">Clients</div>
         <div class="clients-controls">
           <div class="segment">
             <button class="seg-btn active" id="twToggle">Tidewise</button>
