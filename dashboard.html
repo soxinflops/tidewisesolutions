@@ -791,18 +791,33 @@
       </div>
 
       <!-- Infrastructure row -->
-      <div class="stats-row" style="grid-template-columns: 1fr 3fr; margin-bottom:1.5rem; align-items:start;">
-        <div class="stat-card" style="height:100%;">
-          <div class="stat-eyebrow">Netlify</div>
-          <div class="stat-num" id="sNlPlan" style="font-size:1.1rem; margin:0.3rem 0 0.5rem;">—</div>
-          <div style="font-size:0.82rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace; margin-bottom:0.5rem;" id="sNlBw">bandwidth: —</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden;">
+      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
+        <div class="stat-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="stat-eyebrow">Netlify · Bandwidth</div>
+            <button onclick="loadNetlify()" style="background:none; border:none; color:var(--text-dim); font-size:0.75rem; cursor:pointer; font-family:'JetBrains Mono',monospace; padding:0;" title="Refresh">↻</button>
+          </div>
+          <div class="stat-num" id="sNlPlan" style="font-size:1.1rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
             <div id="sNlBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
           </div>
-          <div class="stat-note" id="sNlNote" style="margin-top:0.4rem;">— / 100 GB</div>
+          <div class="stat-note" id="sNlNote">— / 100 GB</div>
         </div>
-        <div class="stat-card" style="opacity:0.35; font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--text-dim); display:flex; align-items:center; justify-content:center; letter-spacing:0.05em;">
-          more infra widgets coming
+        <div class="stat-card">
+          <div class="stat-eyebrow">Netlify · Build Minutes</div>
+          <div class="stat-num" id="sNlBuild" style="font-size:1.1rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+            <div id="sNlBuildBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
+          </div>
+          <div class="stat-note" id="sNlBuildNote">— / — min</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-eyebrow">Netlify · Functions</div>
+          <div class="stat-num" id="sNlFn" style="font-size:1.1rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+            <div id="sNlFnBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
+          </div>
+          <div class="stat-note" id="sNlFnNote">— / — sec</div>
         </div>
       </div>
 
@@ -1098,13 +1113,31 @@
         const res = await fetch('/.netlify/functions/netlify-status');
         if (!res.ok) return;
         const d = await res.json();
+
+        function bar(id, used, limit) {
+          if (used == null || !limit) return;
+          const pct = Math.min(100, (used / limit) * 100);
+          const color = pct >= 80 ? '#ff7b6b' : pct >= 50 ? '#f5c518' : 'var(--teal)';
+          const el = document.getElementById(id);
+          if (el) { el.style.width = pct + '%'; el.style.background = color; }
+        }
+
         put('sNlPlan', d.plan);
-        const pct = Math.min(100, ((d.bandwidth_gb / d.limit_gb) * 100)).toFixed(1);
-        const color = pct >= 80 ? '#ff7b6b' : pct >= 50 ? '#f5c518' : 'var(--teal)';
-        put('sNlBw', `bandwidth · ${d.bandwidth_gb} GB used`);
-        document.getElementById('sNlBar').style.width  = pct + '%';
-        document.getElementById('sNlBar').style.background = color;
-        put('sNlNote', `${d.bandwidth_gb} / ${d.limit_gb} GB · ${d.site_count} site${d.site_count !== 1 ? 's' : ''}`);
+        bar('sNlBar', d.bandwidth_used_gb, d.bandwidth_limit_gb);
+        put('sNlNote', `${d.bandwidth_used_gb} / ${d.bandwidth_limit_gb} GB · ${d.site_count} site${d.site_count !== 1 ? 's' : ''}`);
+
+        if (d.build_used_min != null) {
+          put('sNlBuild', d.build_used_min + ' min');
+          bar('sNlBuildBar', d.build_used_min, d.build_limit_min);
+          put('sNlBuildNote', `${d.build_used_min} / ${d.build_limit_min ?? '—'} min`);
+        } else { put('sNlBuild', 'n/a'); }
+
+        if (d.fn_used_sec != null) {
+          put('sNlFn', d.fn_used_sec + 's');
+          bar('sNlFnBar', d.fn_used_sec, d.fn_limit_sec);
+          put('sNlFnNote', `${d.fn_used_sec} / ${d.fn_limit_sec ?? '—'} sec`);
+        } else { put('sNlFn', 'n/a'); }
+
       } catch {}
     }
 
