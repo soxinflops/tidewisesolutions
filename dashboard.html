@@ -821,6 +821,35 @@
         </div>
       </div>
 
+      <!-- API Usage row -->
+      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
+        <div class="stat-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="stat-eyebrow">OpenRouter · Balance</div>
+            <button onclick="loadApiUsage()" style="background:none; border:none; color:var(--text-dim); font-size:0.75rem; cursor:pointer; font-family:'JetBrains Mono',monospace; padding:0;" title="Refresh">↻</button>
+          </div>
+          <div class="stat-num" id="sOrBalance" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+            <div id="sOrBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
+          </div>
+          <div class="stat-note" id="sOrNote">used / limit</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-eyebrow">OpenAI · MTD Usage</div>
+          <div class="stat-num" id="sOaiUsed" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+            <div id="sOaiBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
+          </div>
+          <div class="stat-note" id="sOaiNote">— / — limit</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-eyebrow">Anthropic · MTD Tokens</div>
+          <div class="stat-num" id="sAnthIn" style="font-size:1.1rem; margin:0.3rem 0 0.2rem;">—</div>
+          <div class="stat-note" style="margin-bottom:0.3rem;" id="sAnthOut">out: —</div>
+          <div class="stat-note" id="sAnthNote">input · output tokens</div>
+        </div>
+      </div>
+
       <!-- Live Feed -->
       <div class="feed-wrap">
         <div class="feed-top">
@@ -1065,7 +1094,7 @@
       document.getElementById('pwScreen').style.display = 'none';
       document.getElementById('dash').style.display = 'block';
       tickClock();
-      await Promise.all([loadLeads(), loadTwClients(), loadTsClients(), loadStripe(), loadNetlify()]);
+      await Promise.all([loadLeads(), loadTwClients(), loadTsClients(), loadStripe(), loadNetlify(), loadApiUsage()]);
       subscribeRealtime();
     }
 
@@ -1138,6 +1167,46 @@
           put('sNlFnNote', `${d.fn_used_sec} / ${d.fn_limit_sec ?? '—'} sec`);
         } else { put('sNlFn', 'n/a'); }
 
+      } catch {}
+    }
+
+    async function loadApiUsage() {
+      try {
+        const res = await fetch('https://keelswitch.vercel.app/api/usage');
+        if (!res.ok) return;
+        const d = await res.json();
+        const fmt = v => v != null ? '$' + (+v).toFixed(2) : '—';
+        const fmtK = v => v != null ? (v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : v) : '—';
+
+        function bar(id, used, limit) {
+          if (used == null || !limit) return;
+          const pct = Math.min(100, (used / limit) * 100);
+          const color = pct >= 80 ? '#ff7b6b' : pct >= 50 ? '#f5c518' : 'var(--teal)';
+          const el = document.getElementById(id);
+          if (el) { el.style.width = pct + '%'; el.style.background = color; }
+        }
+
+        if (d.openrouter) {
+          const or = d.openrouter;
+          const remaining = or.limit_usd != null ? or.limit_usd - or.usage_usd : null;
+          put('sOrBalance', remaining != null ? fmt(remaining) + ' left' : fmt(or.usage_usd) + ' used');
+          bar('sOrBar', or.usage_usd, or.limit_usd);
+          put('sOrNote', or.limit_usd != null ? `${fmt(or.usage_usd)} used · ${fmt(or.limit_usd)} limit` : `${fmt(or.usage_usd)} used · no limit`);
+        }
+
+        if (d.openai) {
+          const oai = d.openai;
+          put('sOaiUsed', fmt(oai.used_usd));
+          bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
+          put('sOaiNote', `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} limit`);
+        }
+
+        if (d.anthropic) {
+          const anth = d.anthropic;
+          put('sAnthIn',  fmtK(anth.input_tokens)  + ' in');
+          put('sAnthOut', 'out: ' + fmtK(anth.output_tokens));
+          put('sAnthNote', 'input · output tokens this month');
+        }
       } catch {}
     }
 
