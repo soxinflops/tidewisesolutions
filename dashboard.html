@@ -790,6 +790,8 @@
         </div>
       </div>
 
+      <!-- Section: Hosting -->
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">Hosting</div>
       <!-- Infrastructure row -->
       <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
         <div class="stat-card">
@@ -821,6 +823,8 @@
         </div>
       </div>
 
+      <!-- Section: API Spend -->
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">API Spend</div>
       <!-- API Usage row -->
       <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
         <div class="stat-card">
@@ -847,6 +851,31 @@
           <div class="stat-num" id="sAnthIn" style="font-size:1.1rem; margin:0.3rem 0 0.2rem;">—</div>
           <div class="stat-note" style="margin-bottom:0.3rem;" id="sAnthOut">out: —</div>
           <div class="stat-note" id="sAnthNote">input · output tokens</div>
+        </div>
+      </div>
+
+      <!-- Section: Services -->
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">Services</div>
+      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
+        <div class="stat-card">
+          <div class="stat-eyebrow">Supabase · Database</div>
+          <div class="stat-num" id="sSbLeads" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
+          <div class="stat-note" id="sSbClients" style="margin-bottom:0.3rem;">— clients</div>
+          <div class="stat-note" id="sSbNote">leads · active clients</div>
+        </div>
+        <div class="stat-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="stat-eyebrow">Deepgram · MTD</div>
+            <button onclick="loadApiUsage()" style="background:none; border:none; color:var(--text-dim); font-size:0.75rem; cursor:pointer; font-family:'JetBrains Mono',monospace; padding:0;" title="Refresh">↻</button>
+          </div>
+          <div class="stat-num" id="sDgReqs" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
+          <div class="stat-note" id="sDgHours">— hrs decoded</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-eyebrow">Vercel · Projects</div>
+          <div class="stat-num" id="sVcProjects" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
+          <div class="stat-note" id="sVcDeploy">last deploy: —</div>
+          <div class="stat-note" id="sVcTeam">—</div>
         </div>
       </div>
 
@@ -1094,7 +1123,7 @@
       document.getElementById('pwScreen').style.display = 'none';
       document.getElementById('dash').style.display = 'block';
       tickClock();
-      await Promise.all([loadLeads(), loadTwClients(), loadTsClients(), loadStripe(), loadNetlify(), loadApiUsage()]);
+      await Promise.all([loadLeads(), loadTwClients(), loadTsClients(), loadStripe(), loadNetlify(), loadApiUsage(), loadVercel()]);
       subscribeRealtime();
     }
 
@@ -1108,7 +1137,7 @@
     async function loadLeads() {
       const { data } = await supabaseClient.from('leads').select('*').order('created_at', { ascending: false });
       allLeads = data || [];
-      updateStats(); renderFeed(allLeads.slice(0,25)); renderTwCards();
+      updateStats(); renderFeed(allLeads.slice(0,25)); renderTwCards(); renderSupabaseCard();
     }
 
     async function loadTwClients() {
@@ -1207,7 +1236,35 @@
           put('sAnthOut', 'out: ' + fmtK(anth.output_tokens));
           put('sAnthNote', 'input · output tokens this month');
         }
+
+        if (d.deepgram) {
+          const dg = d.deepgram;
+          put('sDgReqs',  dg.requests != null ? dg.requests.toLocaleString() + ' reqs' : '—');
+          put('sDgHours', dg.hours_decoded != null ? (+dg.hours_decoded).toFixed(2) + ' hrs decoded' : '—');
+        }
       } catch {}
+    }
+
+    async function loadVercel() {
+      try {
+        const res = await fetch('/.netlify/functions/vercel-status');
+        if (!res.ok) return;
+        const d = await res.json();
+        put('sVcProjects', d.project_count ?? '—');
+        put('sVcTeam', d.team_name || '—');
+        if (d.last_deploy_min != null) {
+          const age = d.last_deploy_min < 60
+            ? d.last_deploy_min + 'm ago'
+            : Math.round(d.last_deploy_min / 60) + 'h ago';
+          put('sVcDeploy', `last deploy: ${age}${d.last_deploy_name ? ' · ' + d.last_deploy_name : ''}`);
+        }
+      } catch {}
+    }
+
+    function renderSupabaseCard() {
+      put('sSbLeads',   allLeads.length + ' leads');
+      put('sSbClients', (twClients.length + tsClients.length) + ' clients');
+      put('sSbNote',    'tidewise · tidesites · leads');
     }
 
     // ── Stats ─────────────────────────────────────────────────────────
