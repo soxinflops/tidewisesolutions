@@ -1724,7 +1724,7 @@
         const tokLine = (m.input_tokens != null || m.output_tokens != null)
           ? `<div style="color:rgba(255,255,255,0.35);font-size:0.72rem;margin-top:0.1rem;">${fmtTok(m.input_tokens)} in · ${fmtTok(m.output_tokens)} out</div>`
           : '';
-        return `<div style="padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+        return `<div style="padding:0.15rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
           <div style="display:flex;justify-content:space-between;align-items:baseline;">
             <span style="color:var(--text);font-size:0.85rem;">${m.name}</span>
             <span style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:0.85rem;">$${m.cost.toFixed(4)}</span>
