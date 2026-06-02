@@ -680,10 +680,9 @@
     .dispute-reason-inline {
       font-size: 0.8rem; color: #fbbf24; font-style: italic;
       background: rgba(245,158,11,0.07); border-left: 2px solid rgba(245,158,11,0.5);
-      padding: 0.3rem 0.5rem; margin-bottom: 0.4rem;
-      white-space: nowrap;
-      border-radius: 0 4px 4px 0; max-width: 220px;
-      word-break: break-word; display: block;
+      padding: 0.3rem 0.5rem; margin-bottom: 0.2rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 200px; display: block;
     }
 
     .mail-btn {
@@ -1673,10 +1672,9 @@
 
         let actions = '';
         if (disputed) {
-          const shortReason = (l.dispute_reason||'').substring(0, 52);
-          const hasMore     = (l.dispute_reason||'').length > 52;
-          const reasonHtml  = l.dispute_reason
-            ? `<div class="dispute-reason-inline">"${esc(shortReason)}${hasMore ? '…" ' : '"'} ${hasMore ? `<button class="dispute-more-btn" onclick="showLeadText('${l.id}','reason')">more</button>` : ''}</div>`
+          const hasMore    = (l.dispute_reason||'').length > 0;
+          const reasonHtml = l.dispute_reason
+            ? `<div class="dispute-reason-inline">"${esc(l.dispute_reason)}"</div><button class="dispute-more-btn" onclick="showLeadText('${l.id}','reason')">full msg</button>`
             : '';
           actions = `${reasonHtml}
             <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
