@@ -883,7 +883,7 @@
           </div>
           <div class="stat-note" id="sOrNote">used / limit</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="oaiCard" style="cursor:pointer;" onclick="showOaiModels()" title="Click for model breakdown">
           <div class="stat-eyebrow">OpenAI · MTD Usage</div>
           <div class="stat-num" id="sOaiUsed" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
           <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
@@ -1277,6 +1277,7 @@
 
         if (d.openai) {
           const oai = d.openai;
+          window._oaiModels = oai.models || [];
           if (oai.balance_usd != null) {
             put('sOaiUsed', fmt(oai.balance_usd) + ' left');
             bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
@@ -1284,7 +1285,7 @@
           } else if (oai.used_usd != null) {
             put('sOaiUsed', fmt(oai.used_usd));
             bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
-            put('sOaiNote', `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} limit`);
+            put('sOaiNote', oai.models?.length ? `${fmt(oai.used_usd)} · ${oai.models.length} models` : `${fmt(oai.used_usd)} used`);
           } else if (oai.total_tokens != null) {
             put('sOaiUsed', fmtK(oai.total_tokens) + ' tok');
             put('sOaiNote', 'tokens used this month');
@@ -1712,6 +1713,21 @@
           <td style="white-space:nowrap;">${actions}</td>
         </tr>`;
       }).join('');
+    }
+
+    window._oaiModels = [];
+    function showOaiModels() {
+      const models = window._oaiModels;
+      if (!models.length) return;
+      const rows = models.map(m =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+          <span style="color:var(--text);font-size:0.85rem;">${m.name}</span>
+          <span style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:0.85rem;">$${m.cost.toFixed(4)}</span>
+        </div>`
+      ).join('');
+      document.getElementById('leadTextModalLabel').textContent = 'OpenAI · Model Breakdown';
+      document.getElementById('leadTextModalBody').innerHTML = rows;
+      document.getElementById('leadTextModal').style.display = 'flex';
     }
 
     window._ldMsgs = {};
