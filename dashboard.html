@@ -1825,9 +1825,9 @@
 <!-- Lead text modal (message + dispute reason) -->
 <div id="leadTextModal" onclick="if(event.target===this)this.style.display='none'"
      style="display:none;position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;">
-  <div id="leadTextModalInner" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);border-radius:12px;padding:1.5rem 2rem;max-width:480px;width:90%;position:relative;backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);box-shadow:0 0 48px rgba(245,158,11,0.12),inset 0 0 32px rgba(245,158,11,0.04);">
-    <div id="leadTextModalLabel" style="font-size:0.7rem;color:#fbbf24;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.75rem;opacity:0.7;"></div>
-    <div id="leadTextModalBody" style="color:#fde68a;font-size:0.95rem;line-height:1.7;white-space:pre-wrap;font-style:italic;"></div>
+  <div id="leadTextModalInner" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);border-radius:12px;padding:1.25rem 1.5rem;max-width:700px;width:90%;max-height:360px;display:flex;flex-direction:column;position:relative;backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);box-shadow:0 0 48px rgba(245,158,11,0.12),inset 0 0 32px rgba(245,158,11,0.04);">
+    <div id="leadTextModalLabel" style="font-size:0.7rem;color:#fbbf24;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.75rem;opacity:0.7;flex-shrink:0;"></div>
+    <div id="leadTextModalBody" style="color:#fde68a;font-size:0.95rem;line-height:1.7;white-space:pre-wrap;font-style:italic;overflow-y:auto;flex:1;"></div>
     <button onclick="document.getElementById('leadTextModal').style.display='none'"
             style="position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:rgba(251,191,36,0.5);font-size:1.4rem;cursor:pointer;line-height:1;">×</button>
   </div>
