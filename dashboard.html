@@ -837,28 +837,15 @@
 
       <!-- Section: Hosting -->
       <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">Hosting</div>
-      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
-        <div class="stat-card">
+      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:stretch;">
+        <div class="stat-card" style="cursor:pointer;" onclick="showNetlifyDetail()" title="Click for full breakdown">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div class="stat-eyebrow">Netlify · MTD</div>
-            <button onclick="loadNetlify()" style="background:none; border:none; color:var(--text-dim); font-size:0.75rem; cursor:pointer; font-family:'JetBrains Mono',monospace; padding:0;" title="Refresh">↻</button>
+            <button onclick="event.stopPropagation();loadNetlify()" style="background:none; border:none; color:var(--text-dim); font-size:0.75rem; cursor:pointer; font-family:'JetBrains Mono',monospace; padding:0;" title="Refresh">↻</button>
           </div>
-          <div id="sNlPlan" style="font-size:0.88rem; color:var(--text); margin:0.3rem 0 0.35rem; font-family:'JetBrains Mono',monospace;">—</div>
-          <div class="stat-note" style="margin:0 0 0.1rem;">Bandwidth</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:4px; overflow:hidden; margin-bottom:0.1rem;">
-            <div id="sNlBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
-          </div>
-          <div class="stat-note" id="sNlNote" style="margin-bottom:0.35rem;">—</div>
-          <div class="stat-note" style="margin:0 0 0.1rem;">Builds</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:4px; overflow:hidden; margin-bottom:0.1rem;">
-            <div id="sNlBuildBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
-          </div>
-          <div class="stat-note" id="sNlBuildNote" style="margin-bottom:0.35rem;">—</div>
-          <div class="stat-note" style="margin:0 0 0.1rem;">Functions</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:4px; overflow:hidden; margin-bottom:0.1rem;">
-            <div id="sNlFnBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
-          </div>
-          <div class="stat-note" id="sNlFnNote">—</div>
+          <div class="stat-num" id="sNlPlan" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
+          <div class="stat-note" id="sNlNote">— / 100 GB bandwidth</div>
+          <div class="stat-note" id="sNlSites" style="margin-top:0.15rem;">— sites</div>
         </div>
         <div class="stat-card">
           <div class="stat-eyebrow">Vercel · Projects</div>
@@ -866,17 +853,18 @@
           <div class="stat-note" id="sVcDeploy">last deploy: —</div>
           <div class="stat-note" id="sVcTeam">—</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer;" onclick="showOpsDetail()" title="Click for ops breakdown">
           <div class="stat-eyebrow">Supabase · Ops</div>
           <div class="stat-num" id="sSbStatus" style="font-size:1.3rem; margin:0.3rem 0 0.2rem; color:var(--green);">Online</div>
-          <div class="stat-note" id="sSbOps">— ops logged</div>
+          <div class="stat-note" id="sSbOps">— ops this month</div>
+          <div class="stat-note" id="sSbProviders" style="margin-top:0.15rem;">— providers tracked</div>
         </div>
       </div>
 
       <!-- Section: API Spend -->
       <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase; cursor:pointer;" onclick="loadApiUsage()">API ↻</div>
       <!-- API Usage row -->
-      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
+      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:stretch;">
         <div class="stat-card" style="cursor:pointer;" onclick="showOrModels()" title="Click for model breakdown">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div class="stat-eyebrow">OpenRouter · Balance</div>
@@ -898,18 +886,18 @@
         </div>
         <div class="stat-card" id="anthCard" style="cursor:pointer;" onclick="showAnthModels()" title="Click for model breakdown">
           <div class="stat-eyebrow">Anthropic · MTD Spend</div>
-          <div class="stat-num" id="sAnthCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
-          <div class="stat-note" id="sAnthTok">— in · — out</div>
+          <div class="stat-num" id="sAnthCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">$0.00</div>
+          <div class="stat-note" id="sAnthTok">0 in · 0 out</div>
         </div>
       </div>
 
       <!-- Section: Services -->
       <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">Services</div>
-      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
+      <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:stretch;">
         <div class="stat-card" id="gemCard" style="cursor:pointer;" onclick="showGemModels()" title="Click for model breakdown">
           <div class="stat-eyebrow">Google · MTD Spend</div>
-          <div class="stat-num" id="sGemCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
-          <div class="stat-note" id="sGemTok">— in · — out</div>
+          <div class="stat-num" id="sGemCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">$0.00</div>
+          <div class="stat-note" id="sGemTok">0 in · 0 out</div>
         </div>
         <div class="stat-card">
           <div class="stat-eyebrow">Mistral · MTD Spend</div>
@@ -1234,21 +1222,10 @@
           if (el) { el.style.width = pct + '%'; el.style.background = color; }
         }
 
-        put('sNlPlan', d.plan);
-        bar('sNlBar', d.bandwidth_used_gb, d.bandwidth_limit_gb);
-        put('sNlNote', `${d.bandwidth_used_gb} / ${d.bandwidth_limit_gb} GB · ${d.site_count} site${d.site_count !== 1 ? 's' : ''}`);
-
-        if (d.build_used_min != null) {
-          put('sNlBuild', d.build_used_min + ' min');
-          bar('sNlBuildBar', d.build_used_min, d.build_limit_min);
-          put('sNlBuildNote', `${d.build_used_min} / ${d.build_limit_min ?? '—'} min`);
-        } else { put('sNlBuild', 'n/a'); }
-
-        if (d.fn_used_sec != null) {
-          put('sNlFn', d.fn_used_sec + 's');
-          bar('sNlFnBar', d.fn_used_sec, d.fn_limit_sec);
-          put('sNlFnNote', `${d.fn_used_sec} / ${d.fn_limit_sec ?? '—'} sec`);
-        } else { put('sNlFn', 'n/a'); }
+        window._nlData = d;
+        put('sNlPlan', d.plan ?? '—');
+        put('sNlNote', `${d.bandwidth_used_gb ?? '—'} / ${d.bandwidth_limit_gb ?? '100'} GB bandwidth`);
+        put('sNlSites', `${d.site_count ?? '—'} site${d.site_count !== 1 ? 's' : ''}`);
 
       } catch {}
     }
@@ -1340,7 +1317,10 @@
           .gte('created_at', monthStart);
         if (!data) return;
 
-        put('sSbOps', data.length + ' ops logged');
+        window._opsData = data;
+        put('sSbOps', data.length + ' ops this month');
+        const providerSet = new Set(data.map(r => r.provider));
+        put('sSbProviders', providerSet.size + ' provider' + (providerSet.size !== 1 ? 's' : '') + ' tracked');
 
         function aggregate(rows) {
           const totalCost = rows.reduce((s, r) => s + (+r.cost_usd || 0), 0);
@@ -1786,6 +1766,57 @@
     }
 
     window._oaiModels = [];
+    function showNetlifyDetail() {
+      const d = window._nlData;
+      if (!d) return;
+      function mbar(used, limit) {
+        const p = limit ? Math.min(100, (used / limit) * 100) : 0;
+        const c = p >= 80 ? '#ff7b6b' : p >= 50 ? '#f5c518' : 'var(--teal)';
+        return `<div style="background:rgba(255,255,255,0.06);border-radius:4px;height:4px;overflow:hidden;margin-bottom:0.15rem;"><div style="height:100%;width:${p}%;background:${c};border-radius:4px;transition:width 0.4s;"></div></div>`;
+      }
+      document.getElementById('leadTextModalLabel').textContent = 'Netlify · MTD Detail';
+      document.getElementById('leadTextModalBody').innerHTML = `
+        <div style="padding:0.15rem 0;">
+          <div style="color:var(--text-dim);font-size:0.72rem;margin-bottom:0.1rem;letter-spacing:0.08em;">BANDWIDTH</div>
+          ${mbar(d.bandwidth_used_gb, d.bandwidth_limit_gb)}
+          <div style="color:var(--text);font-size:0.82rem;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">${d.bandwidth_used_gb ?? '—'} / ${d.bandwidth_limit_gb ?? '100'} GB · ${d.site_count ?? '—'} sites</div>
+          <div style="color:var(--text-dim);font-size:0.72rem;margin-bottom:0.1rem;letter-spacing:0.08em;">BUILD MINUTES</div>
+          ${mbar(d.build_used_min, d.build_limit_min)}
+          <div style="color:var(--text);font-size:0.82rem;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">${d.build_used_min ?? 'n/a'} / ${d.build_limit_min ?? '—'} min</div>
+          <div style="color:var(--text-dim);font-size:0.72rem;margin-bottom:0.1rem;letter-spacing:0.08em;">FUNCTIONS</div>
+          ${mbar(d.fn_used_sec, d.fn_limit_sec)}
+          <div style="color:var(--text);font-size:0.82rem;font-family:'JetBrains Mono',monospace;">${d.fn_used_sec ?? 'n/a'} / ${d.fn_limit_sec ?? '—'} sec</div>
+        </div>`;
+      document.getElementById('leadTextModal').style.display = 'flex';
+    }
+
+    function showOpsDetail() {
+      const data = window._opsData;
+      if (!data?.length) return;
+      const byProvider = {};
+      for (const r of data) {
+        const p = r.provider || 'other';
+        if (!byProvider[p]) byProvider[p] = { count: 0, cost: 0, input: 0, output: 0 };
+        byProvider[p].count++;
+        byProvider[p].cost  += +r.cost_usd     || 0;
+        byProvider[p].input += r.input_tokens  || 0;
+        byProvider[p].output+= r.output_tokens || 0;
+      }
+      const fmtK = v => v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : String(v);
+      const rows = Object.entries(byProvider).sort((a,b) => b[1].cost - a[1].cost).map(([name, v]) =>
+        `<div style="padding:0.08rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <span style="color:var(--text);font-size:0.78rem;">${name}</span>
+            <span style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:0.78rem;">$${v.cost.toFixed(4)}</span>
+          </div>
+          <div style="color:rgba(255,255,255,0.3);font-size:0.67rem;">${v.count} ops · ${fmtK(v.input)} in · ${fmtK(v.output)} out</div>
+        </div>`
+      ).join('');
+      document.getElementById('leadTextModalLabel').textContent = `Supabase · Ops This Month (${data.length} total)`;
+      document.getElementById('leadTextModalBody').innerHTML = rows;
+      document.getElementById('leadTextModal').style.display = 'flex';
+    }
+
     function showAnthModels() {
       const models = window._anthModels;
       if (!models?.length) return;
