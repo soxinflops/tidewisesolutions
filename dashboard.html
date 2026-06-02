@@ -664,10 +664,24 @@
       padding: 0.12rem 0.5rem; margin-top: 0.35rem; display: inline-block;
     }
 
+    .msg-peek-btn {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--teal); background: rgba(0,201,167,0.08);
+      border: 1px solid rgba(0,201,167,0.25); border-radius: 4px;
+      padding: 0.15rem 0.5rem; cursor: pointer;
+    }
+    .msg-peek-btn:hover { background: rgba(0,201,167,0.15); }
+    .dispute-more-btn {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+      color: #fbbf24; background: none; border: none; padding: 0;
+      cursor: pointer; text-decoration: underline;
+    }
+
     .dispute-reason-inline {
       font-size: 0.8rem; color: #fbbf24; font-style: italic;
       background: rgba(245,158,11,0.07); border-left: 2px solid rgba(245,158,11,0.5);
       padding: 0.3rem 0.5rem; margin-bottom: 0.4rem;
+      white-space: nowrap;
       border-radius: 0 4px 4px 0; max-width: 220px;
       word-break: break-word; display: block;
     }
@@ -1268,6 +1282,9 @@
             put('sOaiUsed', fmt(oai.used_usd));
             bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
             put('sOaiNote', `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} limit`);
+          } else if (oai.total_tokens != null) {
+            put('sOaiUsed', fmtK(oai.total_tokens) + ' tok');
+            put('sOaiNote', 'tokens used this month');
           } else {
             put('sOaiUsed', 'Active');
             put('sOaiNote', 'billing API unavailable');
@@ -1643,7 +1660,12 @@
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">No leads for this month.</td></tr>`;
         return;
       }
+      window._ldMsgs = {};
+      window._ldReasons = {};
       tbody.innerHTML = rows.map(l => {
+        window._ldMsgs[l.id]    = l.message        || '';
+        window._ldReasons[l.id] = l.dispute_reason || '';
+
         const date      = new Date(l.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
         const disputed  = l.status === 'disputed';
         const isValid   = l.status === 'valid'   || l.status === 'approved';
@@ -1651,8 +1673,10 @@
 
         let actions = '';
         if (disputed) {
-          const reasonHtml = l.dispute_reason
-            ? `<div class="dispute-reason-inline">"${esc(l.dispute_reason)}"</div>`
+          const shortReason = (l.dispute_reason||'').substring(0, 52);
+          const hasMore     = (l.dispute_reason||'').length > 52;
+          const reasonHtml  = l.dispute_reason
+            ? `<div class="dispute-reason-inline">"${esc(shortReason)}${hasMore ? '…" ' : '"'} ${hasMore ? `<button class="dispute-more-btn" onclick="showLeadText('${l.id}','reason')">more</button>` : ''}</div>`
             : '';
           actions = `${reasonHtml}
             <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
@@ -1675,18 +1699,28 @@
         };
         const [statusLabel, statusClass] = statusMap[l.status] || [l.status, 's-new'];
 
-        const msg      = (l.message||'—').substring(0,55) + ((l.message||'').length>55?'…':'');
+        const msgCell  = l.message ? `<button class="msg-peek-btn" onclick="showLeadText('${l.id}','msg')">View</button>` : '—';
         const rowClass = disputed ? 'row-disputed' : isInvalid ? 'row-invalid' : '';
 
         return `<tr class="${rowClass}">
           <td>${date}</td><td class="td-name">${esc(l.name)}</td>
           <td>${esc(l.project_type||'—')}</td><td>${esc(l.square_footage||'—')}</td>
           <td>${esc(l.traffic_source||'—')}</td>
-          <td title="${esc(l.message||'')}">${esc(msg)}</td>
+          <td>${msgCell}</td>
           <td><span class="s-pill ${statusClass}">${statusLabel}</span></td>
           <td style="white-space:nowrap;">${actions}</td>
         </tr>`;
       }).join('');
+    }
+
+    window._ldMsgs = {};
+    window._ldReasons = {};
+    function showLeadText(id, type) {
+      const text  = type === 'msg' ? (window._ldMsgs[id]||'') : (window._ldReasons[id]||'');
+      const label = type === 'msg' ? 'Lead Message' : 'Dispute Reason';
+      document.getElementById('leadTextModalLabel').textContent = label;
+      document.getElementById('leadTextModalBody').textContent  = text;
+      document.getElementById('leadTextModal').style.display    = 'flex';
     }
 
     function buildMailto(lead, decision) {
@@ -1765,5 +1799,15 @@
   </script>
 
 
+<!-- Lead text modal (message + dispute reason) -->
+<div id="leadTextModal" onclick="if(event.target===this)this.style.display='none'"
+     style="display:none;position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d1f2d;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1.5rem 2rem;max-width:480px;width:90%;position:relative;">
+    <div id="leadTextModalLabel" style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;"></div>
+    <div id="leadTextModalBody" style="color:var(--text);font-size:0.95rem;line-height:1.65;white-space:pre-wrap;"></div>
+    <button onclick="document.getElementById('leadTextModal').style.display='none'"
+            style="position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:var(--text-dim);font-size:1.4rem;cursor:pointer;line-height:1;">×</button>
+  </div>
+</div>
 </body>
 </html>
