@@ -23,9 +23,10 @@ exports.handler = async () => {
     }
   }
 
+  console.log('netlify caps keys:', JSON.stringify(Object.keys(caps)));
   const bw    = caps.bandwidth         || {};
-  const build = caps.build_minutes     || {};
-  const fns   = caps.serverless_exec_seconds || {};
+  const build = caps.build_minutes     || caps.builds || {};
+  const fns   = caps.serverless_exec_seconds || caps.serverless || {};
 
   // Fallback: sum used_bandwidth across sites if account caps not available
   const bwUsedBytes = bw.used != null

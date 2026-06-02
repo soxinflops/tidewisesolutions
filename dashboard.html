@@ -1264,22 +1264,38 @@
 
         if (d.openai) {
           const oai = d.openai;
-          put('sOaiUsed', fmt(oai.used_usd));
-          bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
-          put('sOaiNote', `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} limit`);
+          if (oai.used_usd != null) {
+            put('sOaiUsed', fmt(oai.used_usd));
+            bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
+            put('sOaiNote', `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} limit`);
+          } else {
+            put('sOaiUsed', 'Active');
+            put('sOaiNote', 'billing API unavailable');
+          }
         }
 
         if (d.anthropic) {
           const anth = d.anthropic;
-          put('sAnthIn',  fmtK(anth.input_tokens)  + ' in');
-          put('sAnthOut', 'out: ' + fmtK(anth.output_tokens));
-          put('sAnthNote', 'input · output tokens this month');
+          if (anth.input_tokens != null) {
+            put('sAnthIn',  fmtK(anth.input_tokens) + ' in');
+            put('sAnthOut', 'out: ' + fmtK(anth.output_tokens));
+            put('sAnthNote', 'input · output tokens this month');
+          } else {
+            put('sAnthIn',  'Active');
+            put('sAnthOut', '');
+            put('sAnthNote', 'no usage API available');
+          }
         }
 
         if (d.deepgram) {
           const dg = d.deepgram;
-          put('sDgReqs',  dg.requests != null ? dg.requests.toLocaleString() + ' reqs' : '—');
-          put('sDgHours', dg.hours_decoded != null ? (+dg.hours_decoded).toFixed(2) + ' hrs decoded' : '—');
+          if (dg.requests != null) {
+            put('sDgReqs',  dg.requests.toLocaleString() + ' reqs');
+            put('sDgHours', dg.hours_decoded != null ? (+dg.hours_decoded).toFixed(2) + ' hrs decoded' : '—');
+          } else {
+            put('sDgReqs',  'Active');
+            put('sDgHours', dg.project_name ?? 'usage unavailable');
+          }
         }
       } catch {}
     }
