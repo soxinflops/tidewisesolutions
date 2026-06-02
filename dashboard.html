@@ -1277,7 +1277,11 @@
 
         if (d.openai) {
           const oai = d.openai;
-          if (oai.used_usd != null) {
+          if (oai.balance_usd != null) {
+            put('sOaiUsed', fmt(oai.balance_usd) + ' left');
+            bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
+            put('sOaiNote', oai.used_usd != null ? `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} granted` : 'prepaid credit balance');
+          } else if (oai.used_usd != null) {
             put('sOaiUsed', fmt(oai.used_usd));
             bar('sOaiBar', oai.used_usd, oai.hard_limit_usd);
             put('sOaiNote', `${fmt(oai.used_usd)} used · ${fmt(oai.hard_limit_usd)} limit`);
