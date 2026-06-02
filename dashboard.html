@@ -837,34 +837,39 @@
 
       <!-- Section: Hosting -->
       <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">Hosting</div>
-      <!-- Infrastructure row -->
       <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
         <div class="stat-card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="stat-eyebrow">Netlify · Bandwidth</div>
+            <div class="stat-eyebrow">Netlify · MTD</div>
             <button onclick="loadNetlify()" style="background:none; border:none; color:var(--text-dim); font-size:0.75rem; cursor:pointer; font-family:'JetBrains Mono',monospace; padding:0;" title="Refresh">↻</button>
           </div>
-          <div class="stat-num" id="sNlPlan" style="font-size:1.1rem; margin:0.3rem 0 0.6rem;">—</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+          <div id="sNlPlan" style="font-size:0.88rem; color:var(--text); margin:0.3rem 0 0.35rem; font-family:'JetBrains Mono',monospace;">—</div>
+          <div class="stat-note" style="margin:0 0 0.1rem;">Bandwidth</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:4px; overflow:hidden; margin-bottom:0.1rem;">
             <div id="sNlBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
           </div>
-          <div class="stat-note" id="sNlNote">— / 100 GB</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eyebrow">Netlify · Build Minutes</div>
-          <div class="stat-num" id="sNlBuild" style="font-size:1.1rem; margin:0.3rem 0 0.6rem;">—</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+          <div class="stat-note" id="sNlNote" style="margin-bottom:0.35rem;">—</div>
+          <div class="stat-note" style="margin:0 0 0.1rem;">Builds</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:4px; overflow:hidden; margin-bottom:0.1rem;">
             <div id="sNlBuildBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
           </div>
-          <div class="stat-note" id="sNlBuildNote">— / — min</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eyebrow">Netlify · Functions</div>
-          <div class="stat-num" id="sNlFn" style="font-size:1.1rem; margin:0.3rem 0 0.6rem;">—</div>
-          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:5px; overflow:hidden; margin-bottom:0.4rem;">
+          <div class="stat-note" id="sNlBuildNote" style="margin-bottom:0.35rem;">—</div>
+          <div class="stat-note" style="margin:0 0 0.1rem;">Functions</div>
+          <div style="background:rgba(255,255,255,0.06); border-radius:4px; height:4px; overflow:hidden; margin-bottom:0.1rem;">
             <div id="sNlFnBar" style="height:100%; background:var(--teal); width:0%; transition:width 0.6s ease; border-radius:4px;"></div>
           </div>
-          <div class="stat-note" id="sNlFnNote">— / — sec</div>
+          <div class="stat-note" id="sNlFnNote">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-eyebrow">Vercel · Projects</div>
+          <div class="stat-num" id="sVcProjects" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
+          <div class="stat-note" id="sVcDeploy">last deploy: —</div>
+          <div class="stat-note" id="sVcTeam">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-eyebrow">Supabase · Ops</div>
+          <div class="stat-num" id="sSbStatus" style="font-size:1.3rem; margin:0.3rem 0 0.2rem; color:var(--green);">Online</div>
+          <div class="stat-note" id="sSbOps">— ops logged</div>
         </div>
       </div>
 
@@ -891,22 +896,25 @@
           </div>
           <div class="stat-note" id="sOaiNote">— / — limit</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-eyebrow">Anthropic · MTD Tokens</div>
-          <div class="stat-num" id="sAnthIn" style="font-size:1.1rem; margin:0.3rem 0 0.2rem;">—</div>
-          <div class="stat-note" style="margin-bottom:0.3rem;" id="sAnthOut">out: —</div>
-          <div class="stat-note" id="sAnthNote">input · output tokens</div>
+        <div class="stat-card" id="anthCard" style="cursor:pointer;" onclick="showAnthModels()" title="Click for model breakdown">
+          <div class="stat-eyebrow">Anthropic · MTD Spend</div>
+          <div class="stat-num" id="sAnthCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div class="stat-note" id="sAnthTok">— in · — out</div>
         </div>
       </div>
 
       <!-- Section: Services -->
       <div style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; color:var(--text-dim); padding:0.4rem 0 0.6rem; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:1rem; text-transform:uppercase;">Services</div>
       <div class="stats-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom:1.5rem; align-items:start;">
+        <div class="stat-card" id="gemCard" style="cursor:pointer;" onclick="showGemModels()" title="Click for model breakdown">
+          <div class="stat-eyebrow">Google · MTD Spend</div>
+          <div class="stat-num" id="sGemCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">—</div>
+          <div class="stat-note" id="sGemTok">— in · — out</div>
+        </div>
         <div class="stat-card">
-          <div class="stat-eyebrow">Supabase · Database</div>
-          <div class="stat-num" id="sSbLeads" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
-          <div class="stat-note" id="sSbClients" style="margin-bottom:0.3rem;">— clients</div>
-          <div class="stat-note" id="sSbNote">leads · active clients</div>
+          <div class="stat-eyebrow">Mistral · MTD Spend</div>
+          <div class="stat-num" id="sMistCost" style="font-size:1.3rem; margin:0.3rem 0 0.6rem;">$0.00</div>
+          <div class="stat-note" id="sMistNote">free tier</div>
         </div>
         <div class="stat-card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -915,12 +923,6 @@
           </div>
           <div class="stat-num" id="sDgReqs" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
           <div class="stat-note" id="sDgHours">— hrs decoded</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eyebrow">Vercel · Projects</div>
-          <div class="stat-num" id="sVcProjects" style="font-size:1.3rem; margin:0.3rem 0 0.2rem;">—</div>
-          <div class="stat-note" id="sVcDeploy">last deploy: —</div>
-          <div class="stat-note" id="sVcTeam">—</div>
         </div>
       </div>
 
@@ -1175,7 +1177,7 @@
       document.getElementById('pwScreen').style.display = 'none';
       document.getElementById('dash').style.display = 'block';
       tickClock();
-      await Promise.all([loadLeads(), loadTwClients(), loadTsClients(), loadStripe(), loadNetlify(), loadApiUsage(), loadVercel()]);
+      await Promise.all([loadLeads(), loadTwClients(), loadTsClients(), loadStripe(), loadNetlify(), loadApiUsage(), loadVercel(), loadAiTracking()]);
       subscribeRealtime();
     }
 
@@ -1297,18 +1299,7 @@
           }
         }
 
-        if (d.anthropic) {
-          const anth = d.anthropic;
-          if (anth.input_tokens != null) {
-            put('sAnthIn',  fmtK(anth.input_tokens) + ' in');
-            put('sAnthOut', 'out: ' + fmtK(anth.output_tokens));
-            put('sAnthNote', 'input · output tokens this month');
-          } else {
-            put('sAnthIn',  'Active');
-            put('sAnthOut', '');
-            put('sAnthNote', 'no usage API available');
-          }
-        }
+        // Anthropic usage loaded separately via loadAnthUsage()
 
         if (d.deepgram) {
           const dg = d.deepgram;
@@ -1339,11 +1330,59 @@
       } catch {}
     }
 
-    function renderSupabaseCard() {
-      put('sSbLeads',   allLeads.length + ' leads');
-      put('sSbClients', (twClients.length + tsClients.length) + ' clients');
-      put('sSbNote',    'tidewise · tidesites · leads');
+    async function loadAiTracking() {
+      try {
+        const now = new Date();
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+        const { data } = await supabaseClient
+          .from('api_usage')
+          .select('provider, model, agent, input_tokens, output_tokens, cost_usd')
+          .gte('created_at', monthStart);
+        if (!data) return;
+
+        put('sSbOps', data.length + ' ops logged');
+
+        function aggregate(rows) {
+          const totalCost = rows.reduce((s, r) => s + (+r.cost_usd || 0), 0);
+          const totalIn   = rows.reduce((s, r) => s + (r.input_tokens  || 0), 0);
+          const totalOut  = rows.reduce((s, r) => s + (r.output_tokens || 0), 0);
+          const modelMap  = {};
+          for (const r of rows) {
+            const k = r.model || 'other';
+            if (!modelMap[k]) modelMap[k] = { cost: 0, input: 0, output: 0 };
+            modelMap[k].cost   += +r.cost_usd     || 0;
+            modelMap[k].input  += r.input_tokens  || 0;
+            modelMap[k].output += r.output_tokens || 0;
+          }
+          return {
+            totalCost, totalIn, totalOut,
+            models: Object.entries(modelMap)
+              .map(([name, v]) => ({ name, cost: v.cost, input_tokens: v.input, output_tokens: v.output }))
+              .sort((a, b) => b.cost - a.cost),
+          };
+        }
+
+        const fmtK = v => v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : String(v);
+
+        const anthRows = data.filter(r => r.provider === 'anthropic');
+        if (anthRows.length) {
+          const { totalCost, totalIn, totalOut, models } = aggregate(anthRows);
+          window._anthModels = models;
+          put('sAnthCost', '$' + totalCost.toFixed(2));
+          put('sAnthTok',  fmtK(totalIn) + ' in · ' + fmtK(totalOut) + ' out');
+        }
+
+        const gemRows = data.filter(r => r.provider === 'google');
+        if (gemRows.length) {
+          const { totalCost, totalIn, totalOut, models } = aggregate(gemRows);
+          window._gemModels = models;
+          put('sGemCost', '$' + totalCost.toFixed(2));
+          put('sGemTok',  fmtK(totalIn) + ' in · ' + fmtK(totalOut) + ' out');
+        }
+      } catch {}
     }
+
+    function renderSupabaseCard() {}
 
     // ── Stats ─────────────────────────────────────────────────────────
     function updateStats() {
@@ -1747,6 +1786,42 @@
     }
 
     window._oaiModels = [];
+    function showAnthModels() {
+      const models = window._anthModels;
+      if (!models?.length) return;
+      const fmtTok = v => v == null ? '' : v >= 1000000 ? (v/1000000).toFixed(2)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : String(v);
+      const rows = models.map(m => {
+        const tokLine = `<div style="color:rgba(255,255,255,0.3);font-size:0.67rem;">${fmtTok(m.input_tokens)} in · ${fmtTok(m.output_tokens)} out</div>`;
+        return `<div style="padding:0.08rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <span style="color:var(--text);font-size:0.78rem;">${m.name}</span>
+            <span style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:0.78rem;">$${m.cost.toFixed(4)}</span>
+          </div>${tokLine}
+        </div>`;
+      }).join('');
+      document.getElementById('leadTextModalLabel').textContent = 'Anthropic · Model Breakdown';
+      document.getElementById('leadTextModalBody').innerHTML = rows;
+      document.getElementById('leadTextModal').style.display = 'flex';
+    }
+
+    function showGemModels() {
+      const models = window._gemModels;
+      if (!models?.length) return;
+      const fmtTok = v => v == null ? '' : v >= 1000000 ? (v/1000000).toFixed(2)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : String(v);
+      const rows = models.map(m => {
+        const tokLine = `<div style="color:rgba(255,255,255,0.3);font-size:0.67rem;">${fmtTok(m.input_tokens)} in · ${fmtTok(m.output_tokens)} out</div>`;
+        return `<div style="padding:0.08rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <span style="color:var(--text);font-size:0.78rem;">${m.name}</span>
+            <span style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:0.78rem;">$${m.cost.toFixed(4)}</span>
+          </div>${tokLine}
+        </div>`;
+      }).join('');
+      document.getElementById('leadTextModalLabel').textContent = 'Google · Model Breakdown';
+      document.getElementById('leadTextModalBody').innerHTML = rows;
+      document.getElementById('leadTextModal').style.display = 'flex';
+    }
+
     function showOaiModels() {
       const models = window._oaiModels;
       if (!models.length) return;
