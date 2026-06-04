@@ -979,7 +979,7 @@
       <table class="leads-table">
         <thead>
           <tr>
-            <th>Date</th><th>Name</th><th>Project Type</th><th>Size</th><th>Source</th><th>Message</th><th>Status</th><th></th>
+            <th>Date</th><th>Name</th><th>Project Type</th><th>Size</th><th>Source</th><th>Message</th><th>Status <button onclick="nukeClientLeads()" style="background:none;border:none;cursor:pointer;font-size:0.95rem;padding:0 0 0 4px;vertical-align:middle;opacity:0.5;" title="Nuke all leads for this client" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">☢</button></th><th></th>
           </tr>
         </thead>
         <tbody id="detailLeadsBody"></tbody>
@@ -1734,7 +1734,10 @@
           <td>${esc(l.project_type||'—')}</td><td>${esc(l.square_footage||'—')}</td>
           <td>${esc(l.traffic_source||'—')}</td>
           <td>${msgCell}</td>
-          <td><span class="s-pill ${statusClass}">${statusLabel}</span></td>
+          <td>${l.status === 'new'
+            ? `<button class="s-pill s-new" onclick="setStatus('${l.id}','valid')" title="Click to mark valid" style="border:none;cursor:pointer;">New</button>`
+            : `<span class="s-pill ${statusClass}">${statusLabel}</span>`
+          }</td>
           <td style="white-space:nowrap;">${actions}</td>
         </tr>`;
       }).join('');
@@ -1896,6 +1899,14 @@
         ? `Hi Matt & Justin,\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was rejected.\n\n`
         : `Hi Matt & Justin,\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was approved.\n\n`;
       return `mailto:justin@ccstoib.com,matt@ccstoib.com?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+    }
+
+    async function nukeClientLeads() {
+      if (!activeClient) return;
+      if (!confirm('Delete ALL leads for this client? There is no undo.')) return;
+      await supabaseClient.from('leads').delete().eq('client_id', activeClient);
+      await loadLeads();
+      openDetail(activeClient);
     }
 
     async function setStatus(id, status) {
