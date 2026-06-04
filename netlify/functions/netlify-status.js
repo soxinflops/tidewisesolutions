@@ -13,25 +13,29 @@ exports.handler = async () => {
   const sites    = await sitesRes.json();
   const acct     = Array.isArray(accounts) ? accounts[0] : {};
 
-  // Pull capabilities (bandwidth, build minutes, function invocations)
-  let caps = {};
+  // Pull capabilities and dedicated bandwidth endpoint in parallel
+  let caps = {}, bwData = {};
   if (acct.slug) {
-    const detailRes = await fetch(`https://api.netlify.com/api/v1/accounts/${acct.slug}`, { headers: h });
-    if (detailRes.ok) {
-      const detail = await detailRes.json();
-      caps = detail.capabilities || {};
-    }
+    const [detailRes, bwRes] = await Promise.all([
+      fetch(`https://api.netlify.com/api/v1/accounts/${acct.slug}`, { headers: h }),
+      fetch(`https://api.netlify.com/api/v1/accounts/${acct.slug}/bandwidth`, { headers: h }),
+    ]);
+    if (detailRes.ok) caps = (await detailRes.json()).capabilities || {};
+    if (bwRes.ok) bwData = await bwRes.json();
   }
 
-  console.log('netlify caps keys:', JSON.stringify(Object.keys(caps)));
-  const bw    = caps.bandwidth         || {};
   const build = caps.build_minutes     || caps.builds || {};
   const fns   = caps.serverless_exec_seconds || caps.serverless || {};
 
-  // Fallback: sum used_bandwidth across sites if account caps not available
-  const bwUsedBytes = bw.used != null
-    ? bw.used
-    : (Array.isArray(sites) ? sites.reduce((s, x) => s + (x.used_bandwidth || 0), 0) : 0);
+  // Prefer dedicated /bandwidth endpoint; fall back to capabilities, then site sum
+  const bwUsedBytes = bwData.used != null
+    ? bwData.used
+    : (caps.bandwidth?.used != null
+        ? caps.bandwidth.used
+        : (Array.isArray(sites) ? sites.reduce((s, x) => s + (x.used_bandwidth || 0), 0) : 0));
+  const bwIncludedBytes = bwData.included != null
+    ? bwData.included
+    : (caps.bandwidth?.included ?? 107374182400); // 100 GB default
 
   return {
     statusCode: 200,
@@ -40,7 +44,10 @@ exports.handler = async () => {
       plan:              acct.type_name || acct.type || '—',
       site_count:        Array.isArray(sites) ? sites.length : 0,
       bandwidth_used_gb: +(bwUsedBytes / 1e9).toFixed(2),
-      bandwidth_limit_gb: bw.included != null ? +(bw.included / 1e9).toFixed(0) : 100,
+      bandwidth_limit_gb: +(bwIncludedBytes / 1e9).toFixed(0),
+      bandwidth_updated:  bwData.last_updated_at || null,
+      period_start:       bwData.period_start_date || null,
+      period_end:         bwData.period_end_date || null,
       build_used_min:    build.used   != null ? Math.round(build.used / 60)   : null,
       build_limit_min:   build.included != null ? Math.round(build.included / 60) : null,
       fn_used_sec:       fns.used     != null ? Math.round(fns.used)           : null,

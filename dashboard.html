@@ -1225,7 +1225,10 @@
 
         window._nlData = d;
         put('sNlPlan', d.plan ?? '—');
-        put('sNlNote', `${d.bandwidth_used_gb ?? '—'} / ${d.bandwidth_limit_gb ?? '100'} GB bandwidth`);
+        const bwUpdated = d.bandwidth_updated
+          ? (() => { const t = new Date(d.bandwidth_updated); return t.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' + t.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); })()
+          : null;
+        put('sNlNote', `${d.bandwidth_used_gb ?? '—'} / ${d.bandwidth_limit_gb ?? '100'} GB bandwidth${bwUpdated ? ` · as of ${bwUpdated}` : ''}`);
         put('sNlSites', `${d.site_count ?? '—'} site${d.site_count !== 1 ? 's' : ''}`);
 
       } catch {}
