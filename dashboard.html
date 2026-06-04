@@ -1706,10 +1706,10 @@
             ? `<div class="dispute-reason-inline" style="cursor:pointer;" onclick="showLeadText('${l.id}','reason')">"${esc(l.dispute_reason)}"</div>`
             : '';
           actions = `${reasonHtml}
-            <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
-                    onclick="setStatus('${l.id}','valid')">Mark Valid</button>
             <button class="action-btn" style="background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.3);"
-                    onclick="setStatus('${l.id}','invalid')">Mark Invalid</button>`;
+                    onclick="setStatus('${l.id}','invalid')">Confirm Dispute</button>
+            <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
+                    onclick="setStatus('${l.id}','valid')">Deny Dispute</button>`;
         } else if (isValid || isInvalid) {
           actions = `
             <a class="mail-btn" href="${buildMailto(l, isValid ? 'valid' : 'invalid')}" title="Email decision">✉</a>
@@ -1719,10 +1719,10 @@
         const statusMap = {
           new:      ['New',                 's-new'],
           disputed: ['Disputed',            's-disputed'],
-          valid:    ['Valid ✓',  's-approved'],
-          approved: ['Valid ✓',  's-approved'],
-          invalid:  ['Dispute Approved ✗',  's-denied'],
-          denied:   ['Dispute Approved ✗',  's-denied'],
+          valid:    ['Valid Lead ✓',   's-approved'],
+          approved: ['Valid Lead ✓',   's-approved'],
+          invalid:  ['Invalid Lead ✗', 's-denied'],
+          denied:   ['Invalid Lead ✗', 's-denied'],
         };
         const [statusLabel, statusClass] = statusMap[l.status] || [l.status, 's-new'];
 
