@@ -745,6 +745,56 @@
     pointer-events: none;
   }
 
+  /* ── Nuke animation ── */
+  #nuke-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    background: radial-gradient(circle at center, rgba(255,60,0,0.55) 0%, rgba(255,0,0,0.15) 50%, transparent 80%);
+  }
+  #nuke-overlay.boom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    animation: nukeFlash 1.6s ease-out forwards;
+  }
+  #nuke-overlay .nuke-icon {
+    font-size: 5rem;
+    animation: nukeSpin 0.8s ease-out forwards;
+    filter: drop-shadow(0 0 24px #ff4500);
+  }
+  #nuke-overlay .nuke-msg {
+    margin-top: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ff6030;
+    text-shadow: 0 0 20px rgba(255,96,48,0.8);
+    animation: nukeFade 1.6s ease-out forwards;
+  }
+  @keyframes nukeFlash {
+    0%   { opacity: 0; }
+    10%  { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @keyframes nukeSpin {
+    0%   { transform: scale(0.2) rotate(-180deg); opacity: 0; }
+    30%  { transform: scale(1.3) rotate(10deg);   opacity: 1; }
+    60%  { transform: scale(1.0) rotate(0deg);    opacity: 1; }
+    100% { transform: scale(1.0) rotate(0deg);    opacity: 1; }
+  }
+  @keyframes nukeFade {
+    0%   { opacity: 0; transform: translateY(10px); }
+    30%  { opacity: 1; transform: translateY(0); }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
   </style>
 </head>
 <body>
@@ -1914,6 +1964,7 @@
         alert('Nuke failed: ' + (data.error || 'unknown error'));
         return;
       }
+      nukeAnimation(data.deleted || 0);
       await loadLeads();
       openDetail(activeClient);
     }
@@ -1993,5 +2044,22 @@
             style="position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:rgba(251,191,36,0.5);font-size:1.4rem;cursor:pointer;line-height:1;">×</button>
   </div>
 </div>
+
+<div id="nuke-overlay">
+  <div class="nuke-icon">☢</div>
+  <div class="nuke-msg" id="nuke-msg">OBLITERATED</div>
+</div>
+
+<script>
+  function nukeAnimation(count) {
+    const overlay = document.getElementById('nuke-overlay');
+    const msg     = document.getElementById('nuke-msg');
+    msg.textContent = count === 0 ? 'ALREADY CLEAN' : `${count} LEAD${count !== 1 ? 'S' : ''} OBLITERATED`;
+    overlay.classList.remove('boom');
+    void overlay.offsetWidth; // force reflow to restart animation
+    overlay.classList.add('boom');
+    setTimeout(() => overlay.classList.remove('boom'), 1700);
+  }
+</script>
 </body>
 </html>
