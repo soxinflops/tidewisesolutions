@@ -1904,7 +1904,16 @@
     async function nukeClientLeads() {
       if (!activeClient) return;
       if (!confirm('Delete ALL leads for this client? There is no undo.')) return;
-      await supabaseClient.from('leads').delete().eq('client_id', activeClient);
+      const res = await fetch('/.netlify/functions/nuke-leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: 'DELETE', clientId: activeClient }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert('Nuke failed: ' + (data.error || 'unknown error'));
+        return;
+      }
       await loadLeads();
       openDetail(activeClient);
     }
