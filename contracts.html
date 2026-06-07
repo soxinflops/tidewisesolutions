@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Contracts — Tidewise Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #07131a;
+      --teal: #1ab8d4;
+      --teal-glow: rgba(26,184,212,0.15);
+      --teal-border: rgba(26,184,212,0.25);
+      --teal-dark: #1a6e7e;
+      --sand: #f5d98a;
+      --coral: #ff7b6b;
+      --green: #3ddc84;
+      --text: #ddeaf0;
+      --text-mid: rgba(221,234,240,0.6);
+      --text-dim: rgba(221,234,240,0.35);
+      --border: rgba(255,255,255,0.06);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 5%, rgba(26,184,212,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 95%, rgba(26,110,126,0.14) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(26,184,212,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,184,212,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Overlay ──────────────────────────────────────────────────── */
+    #overlay {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+      transition: opacity 0.6s ease;
+    }
+    #overlay.fading { opacity: 0; pointer-events: none; }
+    .access-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--teal-border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(26,184,212,0.08);
+      position: relative; z-index: 1;
+    }
+    .access-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .access-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .access-sub {
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-bottom: 32px;
+    }
+    .access-input-wrap { position: relative; margin-bottom: 12px; }
+    .access-input-wrap input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .access-input-wrap input:focus { border-color: var(--teal); }
+    .access-input-wrap input.shake { animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-6px); }
+      40%,80% { transform: translateX(6px); }
+    }
+    .access-btn {
+      width: 100%;
+      background: var(--teal-dark);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 1px;
+    }
+    .access-btn:hover { background: var(--teal); box-shadow: 0 0 20px rgba(26,184,212,0.3); }
+    .access-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .access-error {
+      color: var(--coral);
+      font-size: 13px;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    /* ── Views ──────────────────────────────────────────────────────── */
+    .view { display: none; opacity: 0; transition: opacity 0.5s ease; position: relative; z-index: 1; }
+    .view.visible { display: block; }
+    .view.shown { opacity: 1; }
+
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .page-header p { color: var(--text-mid); font-size: 15px; }
+
+    /* ── Service cards ───────────────────────────────────────────────── */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .service-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .service-card.active {
+      border-color: var(--teal-border);
+      background: var(--teal-glow);
+      cursor: pointer;
+    }
+    .service-card.active:hover {
+      border-color: var(--teal);
+      box-shadow: 0 0 28px rgba(26,184,212,0.18);
+      transform: translateY(-3px);
+    }
+    .service-card.inactive { opacity: 0.45; }
+    .service-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(245,217,138,0.15);
+      border: 1px solid rgba(245,217,138,0.25);
+      color: var(--sand);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .service-icon { font-size: 32px; margin-bottom: 12px; }
+    .service-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .service-desc { color: var(--text-mid); font-size: 13px; margin-bottom: 4px; }
+    .service-detail { color: var(--text-dim); font-size: 12px; margin-bottom: 16px; }
+    .service-btn {
+      background: var(--teal-dark);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      transition: background 0.2s;
+    }
+    .service-btn:hover { background: var(--teal); }
+
+    /* ── TideWatch flow ───────────────────────────────────────────────── */
+    #twFlow { display: none; }
+    .back-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-bottom: 24px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { border-color: var(--teal-border); color: var(--teal); }
+
+    .form-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .form-section h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .field-row.full { grid-template-columns: 1fr; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .field-group input, .field-group select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: 'Open Sans', sans-serif;
+    }
+    .field-group input:focus, .field-group select:focus { border-color: var(--teal); }
+    .field-group select option { background: #07131a; }
+
+    .biz-type-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .biz-type-card {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .biz-type-card:hover { border-color: var(--teal-border); }
+    .biz-type-card.selected {
+      border-color: var(--teal);
+      background: var(--teal-glow);
+    }
+    .biz-type-card input[type=radio] { display: none; }
+    .biz-type-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .biz-type-desc { font-size: 11px; color: var(--text-mid); margin-bottom: 6px; }
+    .biz-type-rate {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+    .biz-type-card.selected .biz-type-title { color: var(--teal); }
+
+    /* ── Contract document ───────────────────────────────────────────── */
+    .contract-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .contract-doc {
+      background: #fcfcfc;
+      color: #1a1a1a;
+      padding: 56px 64px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 9.5pt;
+      line-height: 1.75;
+      border-radius: 4px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.55);
+      margin-bottom: 24px;
+    }
+    .doc-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: #1a6e7e;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .doc-subtitle {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px;
+      color: #444;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .doc-divider { border: none; border-top: 2px solid #1a6e7e; margin: 16px 0; }
+    .doc-meta { display: flex; justify-content: space-between; font-size: 8.5pt; color: #666; font-family: 'Open Sans', sans-serif; margin: 10px 0; }
+    .parties-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; border: 1px solid #ddd; border-radius: 4px; padding: 16px; background: #fafafa; font-size: 9pt; }
+    .party-label { font-family: 'Open Sans', sans-serif; font-size: 7.5pt; font-weight: 700; color: #1a6e7e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .party-name { font-size: 12pt; font-weight: bold; margin-bottom: 2px; }
+    .herein { font-style: italic; font-size: 8pt; color: #666; margin-top: 4px; }
+    .effective-line { font-size: 8.5pt; color: #444; margin: 10px 0; }
+    .designation-box { border: 1px solid #ddd; border-radius: 4px; padding: 12px 16px; margin: 14px 0; background: #f9f9f9; font-size: 9pt; }
+    .init-mark { display: inline-block; min-width: 44px; border-bottom: 1px solid #1a6e7e; text-align: center; font-weight: bold; color: #1a6e7e; font-family: 'Open Sans', sans-serif; font-size: 9pt; }
+    .init-mark.empty { color: #bbb; border-bottom-color: #ccc; font-weight: normal; font-style: italic; }
+    .agree-preamble { font-size: 9pt; margin: 10px 0 16px; }
+    .doc-section { margin: 18px 0; }
+    .section-title { font-family: 'Open Sans', sans-serif; font-size: 9.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; }
+    .doc-section p { margin-bottom: 8px; }
+    .subsection { margin: 6px 0; }
+    .sub-title { font-weight: bold; }
+    .ack-box { border: 1px solid #ddd; border-radius: 4px; padding: 12px 16px; margin: 12px 0; background: #f9f9f9; font-size: 9pt; }
+    .ack-box p { margin-bottom: 4px; }
+    .fs-divider { border: none; border-top: 2px solid #1a6e7e; margin: 28px 0 20px; }
+    .fs-title { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 800; color: #1a6e7e; text-align: center; margin-bottom: 2px; }
+    .fs-subtitle { font-family: 'Open Sans', sans-serif; font-size: 10px; color: #444; text-align: center; margin-bottom: 4px; }
+    .fs-note { font-size: 8pt; color: #666; text-align: center; margin-bottom: 14px; }
+    .fs-section-title { font-family: 'Open Sans', sans-serif; font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin: 14px 0 6px; }
+    .fee-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 6px 0; font-family: 'Open Sans', sans-serif; }
+    .fee-table th { background: #1a6e7e; color: white; padding: 7px 10px; text-align: left; font-weight: 600; }
+    .fee-table td { padding: 6px 10px; border-bottom: 1px solid #ddd; }
+    .fee-table tr:nth-child(even) td { background: #f0f4f5; }
+    .fee-table tr.highlight td { background: #dff0f5; font-weight: 600; }
+    .fs-footnote { font-size: 8pt; color: #666; margin-top: 6px; }
+    .sig-section { margin-top: 32px; padding-top: 20px; border-top: 2px solid #1a6e7e; }
+    .sig-section-title { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 800; text-align: center; color: #1a6e7e; margin-bottom: 4px; }
+    .sig-intro { font-size: 9pt; text-align: center; color: #444; margin-bottom: 20px; }
+    .sig-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .sig-col { border: 1px solid #ddd; border-radius: 4px; padding: 16px; font-size: 9pt; }
+    .sig-col-label { font-family: 'Open Sans', sans-serif; font-size: 7.5pt; font-weight: 700; color: #1a6e7e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .sig-col > div { margin-bottom: 5px; }
+    .sig-pending { color: #aaa; font-style: italic; margin-top: 8px; font-size: 9pt; }
+    .doc-copyright { font-size: 8pt; color: #aaa; text-align: center; margin-top: 20px; font-family: 'Open Sans', sans-serif; }
+
+    /* preview spans */
+    .pv { color: #1a6e7e; font-weight: bold; border-bottom: 1px solid #1a6e7e; min-width: 60px; display: inline-block; }
+    .pv.empty { color: #bbb; border-bottom: 1px dashed #ccc; font-weight: normal; font-style: italic; min-width: 80px; }
+
+    /* ── Sign section ────────────────────────────────────────────────── */
+    .sign-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--teal-border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    .sign-section h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .agree-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 16px 0 20px;
+    }
+    .agree-row input[type=checkbox] {
+      width: 18px; height: 18px; min-width: 18px;
+      margin-top: 2px; cursor: pointer;
+      accent-color: var(--teal);
+    }
+    .agree-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+    .timestamp-note { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; font-style: italic; }
+    .submit-btn {
+      background: var(--teal-dark);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      width: 100%;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .submit-btn:hover:not(:disabled) { background: var(--teal); box-shadow: 0 0 24px rgba(26,184,212,0.25); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Confirmation ─────────────────────────────────────────────────── */
+    #confirmView {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+    }
+    .confirm-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--teal-border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 520px;
+      text-align: center;
+    }
+    .confirm-icon { font-size: 56px; margin-bottom: 16px; }
+    .confirm-card h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+    .confirm-card p { color: var(--text-mid); font-size: 15px; line-height: 1.65; margin-bottom: 12px; }
+    .confirm-card a { color: var(--teal); }
+    .confirm-agno {
+      display: inline-block;
+      background: var(--teal-glow);
+      border: 1px solid var(--teal-border);
+      color: var(--teal);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      margin: 8px 0;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    /* ── Owner view ───────────────────────────────────────────────────── */
+    .owner-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .owner-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .logout-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      border-radius: 6px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { border-color: var(--coral); color: var(--coral); }
+    .pending-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .pending-card:hover { border-color: var(--teal-border); background: var(--teal-glow); }
+    .pending-dot { width: 10px; height: 10px; background: var(--sand); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px rgba(245,217,138,0.5); }
+    .pending-info { flex: 1; }
+    .pending-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .pending-meta { font-size: 12px; color: var(--text-dim); }
+    .pending-agno { font-size: 12px; color: var(--teal); font-family: 'Montserrat', sans-serif; }
+    .pending-arrow { color: var(--text-dim); font-size: 18px; }
+    .empty-state { text-align: center; color: var(--text-dim); padding: 60px 0; font-size: 15px; }
+    .empty-state .big { font-size: 48px; margin-bottom: 12px; }
+
+    /* Detail panel */
+    #detailPanel {
+      display: none;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--teal-border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-top: 20px;
+    }
+    .detail-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .detail-header h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .detail-close {
+      background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; line-height: 1;
+    }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .detail-field label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 2px; }
+    .detail-field span { font-size: 14px; color: var(--text); }
+    .sign-actions { display: flex; gap: 12px; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .countersign-btn {
+      background: var(--teal-dark);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.2s;
+      flex: 1;
+    }
+    .countersign-btn:hover:not(:disabled) { background: var(--teal); box-shadow: 0 0 20px rgba(26,184,212,0.3); }
+    .countersign-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .sign-note { font-size: 12px; color: var(--text-dim); }
+    .sign-success { color: var(--green); font-weight: 600; font-size: 14px; }
+
+    @media (max-width: 640px) {
+      .service-grid { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
+      .biz-type-row { grid-template-columns: 1fr; }
+      .parties-row { grid-template-columns: 1fr; }
+      .sig-cols { grid-template-columns: 1fr; }
+      .contract-doc { padding: 28px 20px; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Password Overlay ────────────────────────────────────────────── -->
+  <div id="overlay">
+    <div class="access-card">
+      <div class="access-logo">Tidewise Solutions</div>
+      <div class="access-title">Contracts Portal</div>
+      <div class="access-sub">Enter your access code to continue</div>
+      <div class="access-input-wrap">
+        <input id="accessCode" type="password" placeholder="••••••" autocomplete="off" />
+      </div>
+      <button class="access-btn" id="accessBtn">Enter →</button>
+      <div class="access-error" id="accessError"></div>
+    </div>
+  </div>
+
+  <!-- ── Client View ─────────────────────────────────────────────────── -->
+  <div id="clientView" class="view">
+    <div class="page-wrap">
+      <div class="page-header">
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-bottom:8px;">Tidewise Solutions</div>
+        <h1>Select Your Service</h1>
+        <p>Choose the agreement that fits your business</p>
+      </div>
+
+      <div class="service-grid" id="serviceGrid">
+        <!-- TideWatch -->
+        <div class="service-card active" id="cardTideWatch">
+          <div class="service-icon">⚓</div>
+          <div class="service-name">TideWatch</div>
+          <div class="service-desc">Full-Service Digital Partnership</div>
+          <div class="service-detail">Website · Marketing · Leads · Support</div>
+          <button class="service-btn" onclick="showTideWatch()">Get Started →</button>
+        </div>
+        <!-- TideSites -->
+        <div class="service-card inactive">
+          <div class="service-badge">Coming Soon</div>
+          <div class="service-icon">🌊</div>
+          <div class="service-name">TideSites</div>
+          <div class="service-desc">3-Page Starter Website</div>
+          <div class="service-detail">$555 first year · $99/yr renewal</div>
+        </div>
+        <!-- TideTurn -->
+        <div class="service-card inactive">
+          <div class="service-badge">Coming Soon</div>
+          <div class="service-icon">🔄</div>
+          <div class="service-name">TideTurn</div>
+          <div class="service-desc">Business Transformation</div>
+          <div class="service-detail">Coming 2026</div>
+        </div>
+      </div>
+
+      <!-- TideWatch Form -->
+      <div id="twFlow">
+        <button class="back-btn" onclick="hideTideWatch()">← Back to Services</button>
+
+        <div class="form-section">
+          <h3>Your Information</h3>
+          <div class="field-row">
+            <div class="field-group">
+              <label>First Name</label>
+              <input id="fFirst" type="text" placeholder="First name" oninput="updatePreviews()" />
+            </div>
+            <div class="field-group">
+              <label>Last Name</label>
+              <input id="fLast" type="text" placeholder="Last name" oninput="updatePreviews()" />
+            </div>
+          </div>
+          <div class="field-row full">
+            <div class="field-group">
+              <label>Business Name</label>
+              <input id="fBiz" type="text" placeholder="Your business name (including d/b/a if applicable)" oninput="updatePreviews()" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Email Address</label>
+              <input id="fEmail" type="email" placeholder="your@email.com" oninput="updatePreviews()" />
+            </div>
+            <div class="field-group">
+              <label>Phone Number</label>
+              <input id="fPhone" type="tel" placeholder="(xxx) xxx-xxxx" oninput="updatePreviews()" />
+            </div>
+          </div>
+          <div class="field-group" style="margin-top:4px;">
+            <label>Business Type</label>
+            <div class="biz-type-row">
+              <label class="biz-type-card" id="btRecurring">
+                <input type="radio" name="bizType" value="booking" onchange="selectBizType(this)" />
+                <div class="biz-type-title">Recurring Service</div>
+                <div class="biz-type-desc">You run a booking-based service (lawn care, cleaning, HVAC, etc.)</div>
+                <div class="biz-type-rate">$10.00 per booking</div>
+              </label>
+              <label class="biz-type-card" id="btProject">
+                <input type="radio" name="bizType" value="project" onchange="selectBizType(this)" />
+                <div class="biz-type-title">Project-Based</div>
+                <div class="biz-type-desc">You quote on individual projects (construction, remodeling, turf install, etc.)</div>
+                <div class="biz-type-rate">$20.00 per lead</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contract Document -->
+        <div class="contract-label">Your Agreement</div>
+        <div class="contract-doc">
+
+          <div class="doc-title">TIDEWISE SOLUTIONS</div>
+          <div class="doc-subtitle">Digital Services and Licensing Agreement</div>
+          <hr class="doc-divider" />
+
+          <div class="doc-meta">
+            <span>Agreement No.: <strong>TWS-____________</strong></span>
+            <span>Date: <strong id="pvDate"></strong></span>
+          </div>
+
+          <div class="parties-row">
+            <div>
+              <div class="party-label">CLIENT</div>
+              <div class="party-name"><span class="pv empty" id="pvFirst">First Name</span>&nbsp;<span class="pv empty" id="pvLast">Last Name</span></div>
+              <div>d/b/a <span class="pv empty" id="pvBiz">Business Name</span></div>
+              <div class="herein">hereinafter referred to as "Client"</div>
+            </div>
+            <div>
+              <div class="party-label">SERVICE PROVIDER</div>
+              <div class="party-name">Jonathan Hughes</div>
+              <div>d/b/a Tidewise Solutions</div>
+              <div class="herein">hereinafter referred to as "Tidewise"</div>
+              <div style="margin-top:4px;font-size:9pt;">Brunswick County, North Carolina</div>
+            </div>
+          </div>
+
+          <div class="effective-line">Effective Date: <strong id="pvEffective"></strong> &nbsp;<em style="font-size:8pt;color:#777;">(Agreement takes effect on the first day of the calendar month following this date)</em></div>
+
+          <div class="designation-box">
+            <p style="font-weight:bold;margin-bottom:8px;">Client Business Type Designation (initial one):</p>
+            <p><span class="init-mark empty" id="pvInitR">_____</span>&nbsp;&nbsp;Recurring Service Business (calendar booking form on website)</p>
+            <p style="margin-top:6px;"><span class="init-mark empty" id="pvInitP">_____</span>&nbsp;&nbsp;Project-Based Business (estimate request form on website)</p>
+            <p style="font-size:8pt;color:#777;margin-top:8px;">This designation determines Client's applicable Per-Lead Performance Fee structure as set forth in the Fee Schedule. Designation is locked at signing and cannot be changed without written amendment to this Agreement.</p>
+          </div>
+
+          <p class="agree-preamble">The Parties agree as follows:</p>
+
+          <div class="doc-section">
+            <div class="section-title">1. Nature of This Agreement</div>
+            <p>Tidewise shall design, develop, and deploy digital assets on behalf of Client, including but not limited to a website, domain registration, branded email, and associated digital infrastructure (collectively, the "Digital Assets"). Tidewise shall further provide ongoing digital marketing and web management services during the term of this Agreement.</p>
+            <p>This Agreement governs the ownership, licensing, use, compensation, and termination terms applicable to those services and assets. It is not a guarantee of any specific business outcome. Tidewise's obligation is to deliver qualified leads and maintain Client's digital presence in good faith. Results are subject to market conditions and factors outside Tidewise's control.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">2. Ownership of Digital Assets</div>
+            <p>All Digital Assets created, developed, or procured by Tidewise under this Agreement remain the sole and exclusive intellectual property of Tidewise Solutions at all times, unless ownership is formally transferred pursuant to Section 6.</p>
+            <p>Client's right to use the Digital Assets during the term of this Agreement constitutes a limited, non-exclusive, revocable license only. This license is contingent upon Client remaining in good standing and terminates automatically upon expiration or termination of this Agreement, unless a buyout or transfer has been completed in accordance with Section 6.</p>
+            <p>Client shall not transfer, sublicense, sell, or otherwise convey any rights in the Digital Assets to any third party without the prior written consent of Tidewise.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">3. Compensation and Fee Structure</div>
+            <p class="subsection"><span class="sub-title">3.1 Setup Fee.</span> A one-time, non-refundable setup fee is due upon execution of this Agreement. No work shall commence prior to receipt of said fee.</p>
+            <p class="subsection"><span class="sub-title">3.2 Per-Lead Performance Fee.</span> Throughout the term of this Agreement, Client shall pay a per-lead performance fee for each Qualified Lead delivered through the Digital Assets. The applicable fee is determined by Client's Business Type Designation as set forth in the Fee Schedule. A Qualified Lead is defined as a verified customer inquiry or booking that is: (a) CAPTCHA-authenticated; (b) confirmed non-duplicative; and (c) not successfully disputed by Client through the Client Dashboard within thirty (30) days of delivery.</p>
+            <p class="subsection"><span class="sub-title">3.3 Lead Validity Independent of Conversion.</span> Per-Lead Performance Fees are assessed upon verified delivery of a Qualified Lead to Client. Fees are not contingent upon Client's ability to close, convert, schedule, retain, or complete service for the prospective customer. Failure of Client to respond to, quote on, win the bid for, or successfully complete a job arising from a delivered lead does not constitute grounds for fee dispute or reversal. Disputes shall be limited to challenges regarding the legitimacy of the lead itself (e.g., bot submissions, duplicates, fraudulent inquiries).</p>
+            <p class="subsection"><span class="sub-title">3.4 Monthly Retainer.</span> Following the Safe Harbor Period defined in Section 4, Client shall pay a monthly retainer fee. The applicable retainer tier is determined by Client's monthly Qualified Lead volume in accordance with the tier structure set forth in the Fee Schedule.</p>
+            <p class="subsection"><span class="sub-title">3.5 Fee Schedule.</span> All specific fee amounts, retainer tiers, per-lead rates, and tier thresholds are governed exclusively by the Tidewise Solutions Fee Schedule in effect at the time of signing, which has been provided to and initialed by Client as a separate document.</p>
+            <div class="ack-box">
+              <p><strong>Fee Schedule Acknowledgment</strong></p>
+              <p>Client confirms receipt of the Tidewise Solutions Fee Schedule dated: <strong id="pvDate2"></strong></p>
+              <p>Client Initials: <span class="init-mark empty" id="pvInitAck">___</span>&nbsp;&nbsp;&nbsp;Tidewise Initials: <em>JH</em></p>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">4. The Safe Harbor Period</div>
+            <p>The first ninety (90) days of this Agreement, calculated in full calendar months beginning on the first day of the month following the Effective Date, constitute the "Safe Harbor Period." During this period, no monthly retainer is assessed. Client's sole recurring financial obligation is the per-lead performance fee for each Qualified Lead delivered.</p>
+            <p>Upon conclusion of the Safe Harbor Period, Tidewise shall conduct a Key Performance Indicator audit. Client's Qualified Lead volume during the Safe Harbor Period shall determine Client's initial retainer tier. Client then enters the one-year Retainer Period defined in Section 5.</p>
+            <p>Client may dispute any lead charge by submitting a dispute through the Client Dashboard within thirty (30) days of the lead's appearance therein. Leads confirmed by Tidewise as non-qualifying shall be removed from Client's invoice without charge.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">5. The Retainer Period and Tier Structure</div>
+            <p class="subsection"><span class="sub-title">5.1 Term.</span> The Retainer Period commences upon conclusion of the Safe Harbor Period and continues for twelve (12) calendar months.</p>
+            <p class="subsection"><span class="sub-title">5.2 Tier Advancement.</span> Client's retainer tier shall be subject to upward adjustment when Client's Qualified Lead volume in any single calendar month meets or exceeds the lower threshold of the next tier as defined in the Fee Schedule. Tier advancement takes effect on the first day of the billing cycle immediately following the qualifying month.</p>
+            <p class="subsection"><span class="sub-title">5.3 Tier Floor.</span> Once Client has been assigned to or advanced to a given tier, Client's monthly retainer obligation shall not be reduced below that tier for any reason, including a subsequent decline in lead volume. The tier floor reflects Tidewise's sustained investment in Client's digital infrastructure and ongoing market presence.</p>
+            <p class="subsection"><span class="sub-title">5.4 Re-Evaluation Cadence.</span> Tidewise shall conduct performance re-evaluations every ninety (90) days throughout the Retainer Period for tier advancement assessment only.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">6. Termination and Digital Asset Ownership Upon Exit</div>
+            <p class="subsection"><span class="sub-title">6.1 At Conclusion of the Safe Harbor Period.</span> If Client elects not to continue into the Retainer Period, all outstanding per-lead fees remain due. The Digital Assets remain the property of Tidewise. Client may acquire the Digital Assets, including the domain, by remitting the Buyout Fee within fifteen (15) days. If Client declines, Tidewise retains all Digital Assets with no further obligation on either Party.</p>
+            <p class="subsection"><span class="sub-title">6.2 Early Termination by Client During the Retainer Period.</span> Should Client terminate this Agreement prior to expiration of the Retainer Period: (a) the full monthly retainer for the termination month is due regardless of date; (b) an Early Termination Fee equal to three (3) months of Client's then-current retainer tier is due; (c) the Buyout Fee is due if Client elects to retain the Digital Assets. If Client does not elect to purchase the Digital Assets, they remain the property of Tidewise. The Early Termination Fee represents a reasonable pre-estimate of damages and is not a penalty.</p>
+            <p class="subsection"><span class="sub-title">6.3 Termination by Tidewise During the Retainer Period.</span> Tidewise reserves the right to terminate this Agreement at any time upon written notice. Upon Tidewise-initiated termination: (a) Client owes fifty percent (50%) of the monthly retainer if termination occurs on or before the 15th of the month, or the full monthly retainer if after the 15th; (b) no Early Termination Fee is assessed against Client; (c) the Buyout Fee applies if Client elects to retain the Digital Assets.</p>
+            <p class="subsection"><span class="sub-title">6.4 Expiration Upon Completion of the Full Retainer Period.</span> Upon completion of the full twelve-month Retainer Period, if either Party elects not to renew, no Early Termination Fee applies. Ownership of the Digital Assets, including the domain, transfers to Client upon payment of the Transfer Fee as specified in the Fee Schedule. Domain transfer shall be effectuated at the next registration renewal date. Client's sustained payments throughout the Retainer Period constitute sufficient consideration for this transfer.</p>
+            <p class="subsection"><span class="sub-title">6.5 The Buyout Fee.</span> The Buyout Fee, as specified in the Fee Schedule, is the fixed price at which Client may acquire the Digital Assets upon exit prior to completion of the full Retainer Period. This fee applies regardless of which Party initiates termination. Tidewise reserves the right to waive or reduce this fee at its sole discretion.</p>
+            <p class="subsection"><span class="sub-title">6.6 The Transfer Fee.</span> Upon successful completion of the full twelve-month Retainer Period, Client may elect to retain the Digital Assets by remitting the Transfer Fee as specified in the Fee Schedule. This fee covers the administrative cost of domain transfer and credential handoff. Tidewise reserves the right to waive this fee at its sole discretion.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">7. Invoicing, Payment, and Default</div>
+            <p class="subsection"><span class="sub-title">7.1 Invoicing.</span> Tidewise shall issue invoices monthly to Client's email address on file. Invoices are due upon receipt.</p>
+            <p class="subsection"><span class="sub-title">7.2 Payment Timeline.</span> Payment not received by Day 10 following invoice issuance is considered past due and recorded as such. Three (3) or more past due payment events within a single contract year constitute grounds for termination at Tidewise's discretion. A late fee of Ten Dollars ($10.00) per calendar day shall accrue beginning Day 15 and continuing until paid in full. A second notice shall be issued on Day 20. On Day 30, a formal Notice of Default shall be issued and services may be suspended. A second default event within the same contract year shall result in automatic termination of this Agreement.</p>
+            <p class="subsection"><span class="sub-title">7.3 Termination Balances.</span> All fees arising from termination are due within ten (10) days of the termination date. The same $10.00 per day late fee applies beginning Day 11. Mandatory mediation shall be initiated on Day 30 if the balance remains unresolved.</p>
+            <p class="subsection"><span class="sub-title">7.4 Mandatory Mediation.</span> Prior to initiation of any legal proceedings, the Parties agree to attempt good faith mediation in Brunswick County, North Carolina. For standard invoices, mediation shall be initiated no earlier than Day 45 following invoice issuance.</p>
+            <p class="subsection"><span class="sub-title">7.5 Hardship.</span> Client may request a hardship review in writing prior to an invoice's due date. At Tidewise's sole discretion, late fees may be waived, reduced, or suspended, and services may be temporarily paused. This accommodation may be granted no more than once per contract year.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">8. Fee Schedule Modifications</div>
+            <p>Tidewise reserves the right to modify its Fee Schedule upon no less than thirty (30) days prior written notice to Client. Upon receipt of such notice, Client may accept the modified rates and continue under this Agreement, or terminate this Agreement within the thirty-day notice period without penalty, including without limitation no Early Termination Fee. Standard Digital Asset ownership terms apply upon such exit. Tidewise shall not utilize a fee modification as a mechanism to compel termination or to circumvent the exit provisions of this Agreement.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">9. Business Sale or Transfer</div>
+            <p>This Agreement is personal to Client and is not assignable or transferable without Tidewise's prior written consent. In the event of a sale or transfer of Client's business, Client shall notify Tidewise in writing within fifteen (15) days of the transaction. The Parties shall then enter good faith mediation to determine whether this Agreement shall continue under the new ownership. Failure to reach an agreement, failure to provide timely notice, or failure to participate in mediation shall be treated as a Client-initiated early termination under Section 6.2.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">10. Mutual Confidentiality</div>
+            <p>Each Party agrees to hold in strict confidence all non-public information disclosed by the other in connection with this Agreement, including but not limited to business strategies, financial data, customer information, pricing, and operational methods. Neither Party shall disclose, sell, or use the other's confidential information for any purpose outside this Agreement. This obligation survives termination for a period of two (2) years. Information that is publicly available, previously known to the receiving Party, or disclosed with written consent is excluded from this obligation.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">11. Limitation of Liability</div>
+            <p>Tidewise's obligations under this Agreement are limited to the delivery of Qualified Leads and the provision of digital services as described herein. Tidewise makes no representation or warranty regarding Client's business revenue, customer conversion rates, or overall business performance. Tidewise's total aggregate liability under this Agreement shall not exceed fees paid by Client in the three (3) months preceding the event giving rise to any claim.</p>
+          </div>
+
+          <div class="doc-section">
+            <div class="section-title">12. General Provisions</div>
+            <p><span class="sub-title">Governing Law and Venue.</span> This Agreement is governed by the laws of the State of North Carolina. Any mediation or legal proceedings shall take place exclusively in Brunswick County, North Carolina. Client irrevocably submits to jurisdiction therein and waives any objection to venue.</p>
+            <p><span class="sub-title">Entire Agreement.</span> This Agreement, together with the initialed Fee Schedule, constitutes the entire agreement between the Parties and supersedes all prior discussions, representations, or understandings, whether oral or written.</p>
+            <p><span class="sub-title">Amendments.</span> Any modification to this Agreement must be made in writing and signed by both Parties.</p>
+            <p><span class="sub-title">Severability.</span> If any provision of this Agreement is found unenforceable, the remaining provisions shall remain in full force and effect.</p>
+            <p><span class="sub-title">Waiver.</span> Failure by either Party to enforce any provision shall not constitute a waiver of that right going forward.</p>
+            <p><span class="sub-title">Electronic Signatures.</span> Digital or electronic signatures are valid and binding under this Agreement.</p>
+          </div>
+
+          <!-- Fee Schedule (inline) -->
+          <hr class="fs-divider" />
+          <div class="fs-title">TIDEWISE SOLUTIONS</div>
+          <div class="fs-subtitle">Fee Schedule</div>
+          <div class="fs-note">Incorporated by reference into the Digital Services and Licensing Agreement signed by both parties.</div>
+
+          <div class="fs-section-title">Setup Fee</div>
+          <table class="fee-table">
+            <thead><tr><th>Service</th><th>Amount</th><th>Notes</th></tr></thead>
+            <tbody><tr><td>One-Time Setup</td><td><strong>$255.00</strong></td><td>Non-refundable. No work commences prior to receipt.</td></tr></tbody>
+          </table>
+
+          <div class="fs-section-title">Per-Lead Performance Fees</div>
+          <table class="fee-table" id="perLeadTable">
+            <thead><tr><th>Business Type</th><th>Form Type</th><th>Per-Lead Fee</th></tr></thead>
+            <tbody>
+              <tr id="rowBooking"><td>Recurring Service Business</td><td>Calendar Booking Form</td><td>$10.00 per booking</td></tr>
+              <tr id="rowProject"><td>Project-Based Business</td><td>Estimate Request Form</td><td>$20.00 per lead</td></tr>
+            </tbody>
+          </table>
+
+          <div class="fs-section-title">Monthly Retainer Tier Structure</div>
+          <table class="fee-table">
+            <thead><tr><th>Tier</th><th>Monthly Qualified Leads</th><th>Monthly Retainer</th></tr></thead>
+            <tbody>
+              <tr><td>Dipping the Toe</td><td>1 – 4</td><td>$200.00</td></tr>
+              <tr><td>Rising Tide</td><td>5 – 11</td><td>$500.00</td></tr>
+              <tr><td>Catching the Wave</td><td>12 – 16</td><td>$1,000.00</td></tr>
+              <tr><td>Riding the Wave</td><td>17 – 30</td><td>$1,500.00</td></tr>
+              <tr><td>Tsunami</td><td>31 – 60</td><td>$3,000.00</td></tr>
+              <tr><td>Open Ocean*</td><td>61+</td><td>10% of platform revenue**</td></tr>
+            </tbody>
+          </table>
+          <p class="fs-footnote">* Open Ocean tier subject to mutual written agreement upon reaching the 61-lead threshold.<br/>** Platform-generated revenue = documented revenue directly attributable to leads delivered through Tidewise Digital Assets.</p>
+
+          <div class="fs-section-title">Buyout &amp; Transfer Fees</div>
+          <table class="fee-table">
+            <thead><tr><th>Fee Type</th><th>Amount</th><th>When Applicable</th></tr></thead>
+            <tbody>
+              <tr><td>Buyout Fee</td><td>$500.00</td><td>Client elects to retain Digital Assets upon exit prior to completion of full Retainer Period.</td></tr>
+              <tr><td>Transfer Fee</td><td>$99.00</td><td>Client elects to retain Digital Assets upon successful completion of full Retainer Period.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="fs-section-title">Early Termination</div>
+          <table class="fee-table">
+            <thead><tr><th>Type</th><th>Fee</th></tr></thead>
+            <tbody>
+              <tr><td>Client-Initiated Early Termination Fee</td><td>3 months at current tier rate</td></tr>
+              <tr><td>Tidewise-Initiated Termination Fee</td><td>No early termination fee</td></tr>
+            </tbody>
+          </table>
+
+          <div class="ack-box" style="margin-top:16px;">
+            <p><strong>Acknowledgment of Receipt</strong></p>
+            <p>Client and Tidewise acknowledge receipt and review of this Fee Schedule. This document is incorporated by reference into the executed Digital Services and Licensing Agreement.</p>
+            <p style="margin-top:8px;">Client Initials: <span class="init-mark empty" id="pvInitFs">___</span>&nbsp;&nbsp;&nbsp;Tidewise Initials: <em>JH</em>&nbsp;&nbsp;&nbsp;Date: <strong id="pvDate3"></strong></p>
+          </div>
+
+          <!-- Signature block preview -->
+          <div class="sig-section">
+            <div class="sig-section-title">TIDEWISE SOLUTIONS</div>
+            <div class="sig-intro">Digital Services and Licensing Agreement — Signature Page<br/><em style="font-size:8.5pt;color:#777;">By signing below, both Parties confirm they have read and understood this Agreement in its entirety and agree to be bound by its terms.</em></div>
+            <div class="sig-cols">
+              <div class="sig-col">
+                <div class="sig-col-label">Client</div>
+                <div>Name: <span class="pv empty" id="pvSigName">___________</span></div>
+                <div>d/b/a <span class="pv empty" id="pvSigBiz">___________</span></div>
+                <div>Email: <span class="pv empty" id="pvSigEmail">___________</span></div>
+                <div>Phone: <span class="pv empty" id="pvSigPhone">___________</span></div>
+                <div>Initials: <span class="init-mark empty" id="pvSigInit">___</span></div>
+                <div>Date: <strong id="pvSigDate"></strong></div>
+                <div class="sig-pending">[ Electronic signature captured on submission ]</div>
+              </div>
+              <div class="sig-col">
+                <div class="sig-col-label">Tidewise Solutions</div>
+                <div>Jonathan Hughes</div>
+                <div>d/b/a Tidewise Solutions</div>
+                <div>Email: neal@tidewisesolutions.com</div>
+                <div>Phone: 910-880-1900</div>
+                <div>Initials: JH</div>
+                <div class="sig-pending">[ Pending countersignature ]</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-copyright">© 2026 Tidewise Solutions. Brunswick County, North Carolina. All Rights Reserved.</div>
+        </div>
+
+        <!-- Sign actions -->
+        <div class="sign-section">
+          <h3>Complete Your Signature</h3>
+          <div class="field-row full">
+            <div class="field-group">
+              <label>Type Your Initials</label>
+              <input id="fInitials" type="text" maxlength="5" placeholder="e.g. JH" style="text-transform:uppercase;letter-spacing:4px;font-weight:700;font-size:16px;" oninput="this.value=this.value.toUpperCase();updatePreviews();checkReady()" />
+            </div>
+          </div>
+          <div class="agree-row">
+            <input type="checkbox" id="agreeBox" onchange="checkReady()" />
+            <div class="agree-text">I, <strong id="agName">___________</strong>, on behalf of <strong id="agBiz">___________</strong>, agree to the terms of this Digital Services and Licensing Agreement and the incorporated Fee Schedule. I understand that my electronic signature is legally binding.</div>
+          </div>
+          <div class="timestamp-note" id="tsNote"></div>
+          <div id="submitErr" style="color:var(--coral);font-size:13px;margin-bottom:12px;"></div>
+          <button class="submit-btn" id="submitBtn" disabled onclick="submitContract()">Sign &amp; Submit Agreement</button>
+        </div>
+      </div>
+
+      <!-- Confirmation (inside client view) -->
+      <div id="confirmView" style="display:none;padding:60px 0;">
+        <div class="confirm-card" style="margin:0 auto;">
+          <div class="confirm-icon">✅</div>
+          <h2>Agreement Received</h2>
+          <p>Thank you, <strong id="confName"></strong>.</p>
+          <p>Your TideWatch Digital Services Agreement</p>
+          <div class="confirm-agno" id="confAgNo"></div>
+          <p>has been received and is pending countersignature from Tidewise Solutions. You'll receive a fully executed PDF copy at <strong id="confEmail"></strong> once signed.</p>
+          <p style="margin-top:20px;font-size:13px;">Questions? <a href="mailto:neal@tidewisesolutions.com">neal@tidewisesolutions.com</a> · 910-880-1900</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Owner View ───────────────────────────────────────────────────── -->
+  <div id="ownerView" class="view">
+    <div class="page-wrap">
+      <div class="owner-header">
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--teal);text-transform:uppercase;margin-bottom:4px;">Tidewise Solutions</div>
+          <h1>Pending Countersignature</h1>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">Logout</button>
+      </div>
+      <div id="pendingList"></div>
+      <div id="detailPanel">
+        <div class="detail-header">
+          <h2 id="detailTitle">Contract Detail</h2>
+          <button class="detail-close" onclick="closeDetail()">✕</button>
+        </div>
+        <div class="detail-grid" id="detailGrid"></div>
+        <div class="sign-actions">
+          <div>
+            <div class="sign-note" id="signNote">Select a save location, then countersign to execute the agreement.</div>
+            <div class="sign-success" id="signSuccess" style="display:none;"></div>
+          </div>
+          <button class="countersign-btn" id="countersignBtn" onclick="doCountersign()">✍ Countersign &amp; Execute</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ──────────────────────────────────────────────────────────────
+    let role = null;
+    let ownerPw = null;
+    let supabase = null;
+    let activeContract = null;
+    const $ = id => document.getElementById(id);
+
+    // ── Auth ───────────────────────────────────────────────────────────────
+    $('accessCode').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    $('accessBtn').addEventListener('click', doLogin);
+
+    async function doLogin() {
+      const pw = $('accessCode').value.trim();
+      if (!pw) return;
+      $('accessBtn').disabled = true;
+      $('accessBtn').textContent = '...';
+      $('accessError').textContent = '';
+
+      try {
+        const res = await fetch('/.netlify/functions/contract-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          $('accessError').textContent = data.error || 'Invalid access code.';
+          $('accessCode').classList.add('shake');
+          setTimeout(() => $('accessCode').classList.remove('shake'), 400);
+          return;
+        }
+
+        role = data.role;
+
+        if (role === 'owner') {
+          ownerPw = pw;
+          supabase = window.supabase.createClient(data.supabaseUrl, data.supabaseKey);
+          fadeOverlayTo('ownerView');
+          loadPending();
+        } else {
+          fadeOverlayTo('clientView');
+          initClientView();
+        }
+      } catch (e) {
+        $('accessError').textContent = 'Connection error. Try again.';
+      } finally {
+        $('accessBtn').disabled = false;
+        $('accessBtn').textContent = 'Enter →';
+      }
+    }
+
+    function fadeOverlayTo(viewId) {
+      const overlay = $('overlay');
+      overlay.classList.add('fading');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        const v = $(viewId);
+        v.classList.add('visible');
+        requestAnimationFrame(() => requestAnimationFrame(() => v.classList.add('shown')));
+      }, 600);
+    }
+
+    function doLogout() {
+      location.reload();
+    }
+
+    // ── Client view ────────────────────────────────────────────────────────
+    function initClientView() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      const effectiveStr = next.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      $('pvDate').textContent = dateStr;
+      $('pvDate2').textContent = dateStr;
+      $('pvDate3').textContent = dateStr;
+      $('pvEffective').textContent = effectiveStr;
+      $('pvSigDate').textContent = dateStr;
+      $('tsNote').textContent = `Timestamp will be recorded as: ${now.toLocaleString('en-US', { timeZoneName: 'short' })}`;
+    }
+
+    function showTideWatch() {
+      $('serviceGrid').style.display = 'none';
+      $('twFlow').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideTideWatch() {
+      $('twFlow').style.display = 'none';
+      $('serviceGrid').style.display = 'grid';
+    }
+
+    function selectBizType(radio) {
+      $('btRecurring').classList.toggle('selected', radio.value === 'booking');
+      $('btProject').classList.toggle('selected', radio.value === 'project');
+      // Highlight the chosen row in the fee table
+      $('rowBooking').classList.toggle('highlight', radio.value === 'booking');
+      $('rowProject').classList.toggle('highlight', radio.value === 'project');
+      updatePreviews();
+      checkReady();
+    }
+
+    function updatePreviews() {
+      const first    = $('fFirst').value.trim();
+      const last     = $('fLast').value.trim();
+      const biz      = $('fBiz').value.trim();
+      const email    = $('fEmail').value.trim();
+      const phone    = $('fPhone').value.trim();
+      const initials = $('fInitials')?.value.trim().toUpperCase() || '';
+      const bizType  = document.querySelector('input[name="bizType"]:checked')?.value;
+
+      pv('pvFirst',  first,  'First Name');
+      pv('pvLast',   last,   'Last Name');
+      pv('pvBiz',    biz,    'Business Name');
+      pv('pvSigName',  `${first} ${last}`.trim() || '', '___________');
+      pv('pvSigBiz',   biz,    '___________');
+      pv('pvSigEmail', email,  '___________');
+      pv('pvSigPhone', phone,  '___________');
+
+      // Designation marks
+      im('pvInitR', bizType === 'booking' ? (initials || '_') : '_____');
+      im('pvInitP', bizType === 'project' ? (initials || '_') : '_____');
+      im('pvInitAck', initials || '___');
+      im('pvInitFs',  initials || '___');
+      im('pvSigInit', initials || '___');
+
+      // Agree label names
+      $('agName').textContent = `${first} ${last}`.trim() || '___________';
+      $('agBiz').textContent  = biz || '___________';
+    }
+
+    function pv(id, val, fallback) {
+      const el = $(id); if (!el) return;
+      el.textContent = val || fallback;
+      el.classList.toggle('empty', !val);
+    }
+
+    function im(id, val) {
+      const el = $(id); if (!el) return;
+      const isEmpty = !val || val === '_____' || val === '___' || val === '_';
+      el.textContent = val;
+      el.classList.toggle('empty', isEmpty);
+    }
+
+    function checkReady() {
+      const first    = $('fFirst').value.trim();
+      const last     = $('fLast').value.trim();
+      const biz      = $('fBiz').value.trim();
+      const email    = $('fEmail').value.trim();
+      const phone    = $('fPhone').value.trim();
+      const initials = $('fInitials').value.trim();
+      const bizType  = document.querySelector('input[name="bizType"]:checked');
+      const agreed   = $('agreeBox').checked;
+      const btn = $('submitBtn');
+      btn.disabled = !(first && last && biz && email && phone && initials && bizType && agreed);
+    }
+
+    async function submitContract() {
+      const btn = $('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      $('submitErr').textContent = '';
+
+      const first    = $('fFirst').value.trim();
+      const last     = $('fLast').value.trim();
+      const biz      = $('fBiz').value.trim();
+      const email    = $('fEmail').value.trim();
+      const phone    = $('fPhone').value.trim();
+      const initials = $('fInitials').value.trim().toUpperCase();
+      const bizType  = document.querySelector('input[name="bizType"]:checked').value;
+
+      try {
+        const res = await fetch('/.netlify/functions/contract-submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: first, lastName: last, businessName: biz,
+            email, phone, businessType: bizType, initials,
+            agreedAt: new Date().toISOString(),
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Submission failed');
+
+        // Show confirmation
+        $('twFlow').style.display = 'none';
+        $('serviceGrid').style.display = 'none';
+        $('confName').textContent = first;
+        $('confAgNo').textContent = data.agreementNo;
+        $('confEmail').textContent = email;
+        $('confirmView').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        $('submitErr').textContent = e.message || 'Something went wrong. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Sign & Submit Agreement';
+      }
+    }
+
+    // ── Owner view ─────────────────────────────────────────────────────────
+    async function loadPending() {
+      $('pendingList').innerHTML = '<div style="color:var(--text-dim);padding:16px 0;">Loading…</div>';
+      try {
+        const { data, error } = await supabase
+          .from('signed_contracts')
+          .select('*')
+          .eq('status', 'pending_countersign')
+          .order('client_agreed_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || !data.length) {
+          $('pendingList').innerHTML = `
+            <div class="empty-state">
+              <div class="big">✓</div>
+              <div>No pending contracts — all clear.</div>
+            </div>`;
+          return;
+        }
+
+        $('pendingList').innerHTML = data.map(c => `
+          <div class="pending-card" onclick="openDetail(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+            <div class="pending-dot"></div>
+            <div class="pending-info">
+              <div class="pending-name">${esc(c.business_name)}</div>
+              <div class="pending-meta">${esc(c.first_name)} ${esc(c.last_name)} · ${c.business_type === 'booking' ? 'Recurring ($10/booking)' : 'Project-Based ($20/lead)'} · ${new Date(c.client_agreed_at).toLocaleDateString()}</div>
+            </div>
+            <div class="pending-agno">${esc(c.agreement_no)}</div>
+            <div class="pending-arrow">›</div>
+          </div>`).join('');
+      } catch (e) {
+        $('pendingList').innerHTML = `<div style="color:var(--coral);padding:16px 0;">Error loading contracts: ${e.message}</div>`;
+      }
+    }
+
+    function openDetail(c) {
+      if (typeof c === 'string') c = JSON.parse(c);
+      activeContract = c;
+      $('detailTitle').textContent = `${c.business_name} — ${c.agreement_no}`;
+      $('signSuccess').style.display = 'none';
+      $('signNote').style.display = 'block';
+      $('countersignBtn').disabled = false;
+      $('countersignBtn').textContent = '✍ Countersign & Execute';
+
+      $('detailGrid').innerHTML = [
+        ['Agreement No.', c.agreement_no],
+        ['Client', `${c.first_name} ${c.last_name}`],
+        ['Business', c.business_name],
+        ['Email', c.email],
+        ['Phone', c.phone],
+        ['Type', c.business_type === 'booking' ? 'Recurring Service ($10.00/booking)' : 'Project-Based ($20.00/lead)'],
+        ['Effective Date', c.effective_date],
+        ['Client Signed', new Date(c.client_agreed_at).toLocaleString()],
+        ['IP Address', c.ip_address],
+        ['Initials', c.initials],
+      ].map(([label, val]) => `
+        <div class="detail-field">
+          <label>${label}</label>
+          <span>${esc(String(val || '—'))}</span>
+        </div>`).join('');
+
+      $('detailPanel').style.display = 'block';
+      $('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function closeDetail() {
+      $('detailPanel').style.display = 'none';
+      activeContract = null;
+    }
+
+    async function doCountersign() {
+      if (!activeContract) return;
+      const btn = $('countersignBtn');
+
+      // Step 1: open file picker (must be in user gesture context)
+      let fileHandle = null;
+      if (window.showSaveFilePicker) {
+        try {
+          fileHandle = await window.showSaveFilePicker({
+            suggestedName: `TideWatch-Agreement-${activeContract.agreement_no}.pdf`,
+            types: [{ description: 'PDF Document', accept: { 'application/pdf': ['.pdf'] } }],
+          });
+        } catch (e) {
+          if (e.name === 'AbortError') return; // user cancelled picker
+        }
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Processing…';
+
+      try {
+        const res = await fetch('/.netlify/functions/contract-sign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contractId: activeContract.id, ownerPassword: ownerPw }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Sign failed');
+
+        // Save PDF
+        if (data.pdf) {
+          const bytes = Uint8Array.from(atob(data.pdf), ch => ch.charCodeAt(0));
+          if (fileHandle) {
+            const writable = await fileHandle.createWritable();
+            await writable.write(bytes);
+            await writable.close();
+          } else {
+            // Fallback download
+            const a = document.createElement('a');
+            a.href = `data:application/pdf;base64,${data.pdf}`;
+            a.download = data.filename;
+            a.click();
+          }
+        }
+
+        $('signNote').style.display = 'none';
+        $('signSuccess').style.display = 'block';
+        $('signSuccess').textContent = `✓ Executed — PDF saved & emailed to both parties. Client card created (ID: ${data.clientId}).`;
+        btn.textContent = '✓ Done';
+
+        // Refresh list after short delay
+        setTimeout(() => { loadPending(); closeDetail(); }, 3000);
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = '✍ Countersign & Execute';
+        $('signNote').textContent = `Error: ${e.message}`;
+      }
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>

@@ -389,6 +389,17 @@
     .client-count .big { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.6rem; color: var(--sand); line-height: 1; text-shadow: 0 0 24px rgba(245,217,138,0.2); }
     .client-count .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: var(--text-dim); letter-spacing: 0.08em; }
 
+    .client-delete-btn {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      background: rgba(224,90,43,0.12); border: 1px solid rgba(224,90,43,0.3);
+      color: var(--coral); border-radius: 6px; padding: 0.2rem 0.45rem;
+      font-size: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: 700;
+      cursor: pointer; opacity: 0; transition: opacity 0.18s, background 0.18s;
+      line-height: 1.4; letter-spacing: 0.05em;
+    }
+    .client-card:hover .client-delete-btn { opacity: 1; }
+    .client-delete-btn:hover { background: rgba(224,90,43,0.28) !important; }
+
     /* ── TideSites tiles ──────────────────────────────────────── */
     .ts-tile {
       background: rgba(12,30,42,0.65); backdrop-filter: blur(12px);
@@ -1503,6 +1514,7 @@
           ? `<span class="chip chip-project">Project</span>`
           : `<span class="chip chip-booking">Booking</span>`;
         return `<div class="client-card" onclick="openDetail('${esc(c.client_id)}')">
+          <button class="client-delete-btn" onclick="event.stopPropagation(); deleteClient('${esc(c.client_id)}', '${esc(c.name)}')" title="Delete company">✕ DELETE</button>
           <div class="tier-accent" style="background:${tier.color};box-shadow:0 0 12px ${tier.color}55;"></div>
           <div class="client-info">
             <div class="client-name">${esc(c.name)}</div>
@@ -1601,6 +1613,15 @@
       btn.disabled = false; btn.textContent = 'Save Client';
       if (!error) { document.getElementById('twModal').classList.remove('open'); await loadTwClients(); }
     });
+
+    // ── Delete Tidewise client ────────────────────────────────────────
+    async function deleteClient(clientId, name) {
+      const confirmed = confirm(`DELETE "${name}"?\n\nThis removes the company from the Command Center. It does NOT delete their leads or signed contracts.\n\nType-confirm: this cannot be undone.`);
+      if (!confirmed) return;
+      const { error } = await supabaseClient.from('tidewise_clients').delete().eq('client_id', clientId);
+      if (error) { alert('Delete failed: ' + error.message); return; }
+      await loadTwClients();
+    }
 
     // ── TideSites modal ───────────────────────────────────────────────
     function openTsModal(client = null) {

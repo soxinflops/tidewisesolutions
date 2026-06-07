@@ -1,0 +1,9 @@
+{
+  "name": "tidewise-web",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "pdfkit": "^0.15.0",
+    "resend": "^4.0.0"
+  }
+}
