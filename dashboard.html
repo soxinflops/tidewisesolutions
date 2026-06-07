@@ -1762,9 +1762,10 @@
             <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
                     onclick="setStatus('${l.id}','valid')">Deny Dispute</button>`;
         } else if (isValid || isInvalid) {
+          const undoStatus = isValid ? 'new' : 'disputed';
           actions = `
             <a class="mail-btn" href="${buildMailto(l, isValid ? 'valid' : 'invalid')}" title="Email decision">✉</a>
-            <button class="undo-btn" onclick="setStatus('${l.id}','disputed')">↩ Undo</button>`;
+            <button class="undo-btn" onclick="setStatus('${l.id}','${undoStatus}')">↩ Undo</button>`;
         }
 
         const statusMap = {
