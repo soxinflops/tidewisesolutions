@@ -1746,9 +1746,10 @@
         window._ldReasons[l.id] = l.dispute_reason || '';
 
         const date      = new Date(l.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-        const disputed  = l.status === 'disputed';
-        const isValid   = l.status === 'valid'   || l.status === 'approved';
-        const isInvalid = l.status === 'invalid' || l.status === 'denied';
+        const disputed    = l.status === 'disputed';
+        const isValid     = l.status === 'valid'     || l.status === 'approved';
+        const isInvalid   = l.status === 'invalid'   || l.status === 'denied';
+        const isDuplicate = l.status === 'duplicate';
 
         let actions = '';
         if (disputed) {
@@ -1767,17 +1768,18 @@
         }
 
         const statusMap = {
-          new:      ['New',                 's-new'],
-          disputed: ['Disputed',            's-disputed'],
-          valid:    ['Valid Lead ✓',   's-approved'],
-          approved: ['Valid Lead ✓',   's-approved'],
-          invalid:  ['Invalid Lead ✗', 's-denied'],
-          denied:   ['Invalid Lead ✗', 's-denied'],
+          new:       ['New',                 's-new'],
+          disputed:  ['Disputed',            's-disputed'],
+          valid:     ['Valid Lead ✓',   's-approved'],
+          approved:  ['Valid Lead ✓',   's-approved'],
+          invalid:   ['Invalid Lead ✗', 's-denied'],
+          denied:    ['Invalid Lead ✗', 's-denied'],
+          duplicate: ['Duplicate',           's-new'],
         };
         const [statusLabel, statusClass] = statusMap[l.status] || [l.status, 's-new'];
 
         const msgCell  = l.message ? `<button class="msg-peek-btn" onclick="showLeadText('${l.id}','msg')">View</button>` : '—';
-        const rowClass = disputed ? 'row-disputed' : isInvalid ? 'row-invalid' : '';
+        const rowClass = disputed ? 'row-disputed' : isInvalid ? 'row-invalid' : isDuplicate ? 'row-invalid' : '';
 
         return `<tr class="${rowClass}">
           <td>${date}</td><td class="td-name">${esc(l.name)}</td>
