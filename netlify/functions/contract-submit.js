@@ -75,14 +75,15 @@ exports.handler = async (event) => {
 
   // Email to client — pending confirmation
   if (RESEND_KEY) {
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
-        to: [email],
-        subject: `Agreement Received — ${agreementNo}`,
-        html: `
+    await Promise.all([
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
+          to: [email],
+          subject: `Agreement Received — ${agreementNo}`,
+          html: `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9f9f9;padding:0;">
   <div style="background:#1a6e7e;padding:24px 32px;">
     <h1 style="color:white;margin:0;font-size:20px;letter-spacing:1px;">TIDEWISE SOLUTIONS</h1>
@@ -105,18 +106,17 @@ exports.handler = async (event) => {
     Agreement No. ${agreementNo} · IP: ${ip}
   </div>
 </div>`,
-      }),
-    }).catch(e => console.error('Resend client email error:', e));
+        }),
+      }).catch(e => console.error('Resend client email error:', e)),
 
-    // Notify Neal
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
-        to: ['neal@tidewisesolutions.com'],
-        subject: `New Contract Pending — ${businessName} (${agreementNo})`,
-        html: `
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
+          to: ['neal@tidewisesolutions.com'],
+          subject: `New Contract Pending — ${businessName} (${agreementNo})`,
+          html: `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
   <div style="background:#1a6e7e;padding:20px 28px;">
     <h2 style="color:white;margin:0;font-size:16px;">New Contract Pending Countersignature</h2>
@@ -136,8 +136,9 @@ exports.handler = async (event) => {
     <p style="margin-top:20px;">Log in to <strong>tidewisesolutions.com/contracts</strong> with your owner password to countersign.</p>
   </div>
 </div>`,
-      }),
-    }).catch(e => console.error('Resend owner email error:', e));
+        }),
+      }).catch(e => console.error('Resend owner email error:', e)),
+    ]);
   }
 
   return {
