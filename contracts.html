@@ -974,7 +974,7 @@
     // ── State ──────────────────────────────────────────────────────────────
     let role = null;
     let ownerPw = null;
-    let supabase = null;
+    let sbClient = null;
     let activeContract = null;
     const $ = id => document.getElementById(id);
 
@@ -1008,7 +1008,7 @@
 
         if (role === 'owner') {
           ownerPw = pw;
-          supabase = window.supabase.createClient(data.supabaseUrl, data.supabaseKey);
+          sbClient = window.supabase.createClient(data.supabaseUrl, data.supabaseKey);
           fadeOverlayTo('ownerView');
           loadPending();
         } else {
@@ -1174,7 +1174,7 @@
     async function loadPending() {
       $('pendingList').innerHTML = '<div style="color:var(--text-dim);padding:16px 0;">Loading…</div>';
       try {
-        const { data, error } = await supabase
+        const { data, error } = await sbClient
           .from('signed_contracts')
           .select('*')
           .eq('status', 'pending_countersign')
