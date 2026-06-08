@@ -74,16 +74,17 @@ exports.handler = async (event) => {
   if (RESEND_KEY) {
     const attachment = { filename, content: pdfBase64 };
 
-    // To client
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
-        to: [c.email],
-        subject: `Fully Executed Agreement — ${c.agreement_no}`,
-        attachments: [attachment],
-        html: `
+    await Promise.all([
+      // To client
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
+          to: [c.email],
+          subject: `Fully Executed Agreement — ${c.agreement_no}`,
+          attachments: [attachment],
+          html: `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
   <div style="background:#1a6e7e;padding:24px 32px;">
     <h1 style="color:white;margin:0;font-size:20px;letter-spacing:1px;">TIDEWISE SOLUTIONS</h1>
@@ -108,19 +109,19 @@ exports.handler = async (event) => {
     Tidewise Solutions · Brunswick County, North Carolina · © 2026
   </div>
 </div>`,
-      }),
-    }).catch(e => console.error('Resend client exec email error:', e));
+        }),
+      }).catch(e => console.error('Resend client exec email error:', e)),
 
-    // To Neal
-    fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
-        to: ['neal@tidewisesolutions.com'],
-        subject: `Executed — ${c.business_name} (${c.agreement_no})`,
-        attachments: [attachment],
-        html: `
+      // To Neal
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Tidewise Solutions <contracts@tidewisesolutions.com>',
+          to: ['neal@tidewisesolutions.com'],
+          subject: `Executed — ${c.business_name} (${c.agreement_no})`,
+          attachments: [attachment],
+          html: `
 <div style="font-family:Arial,sans-serif;max-width:600px;">
   <div style="background:#1a6e7e;padding:20px 28px;">
     <h2 style="color:white;margin:0;font-size:16px;">Agreement Fully Executed ✓</h2>
@@ -134,8 +135,9 @@ exports.handler = async (event) => {
     <p>Executed PDF is attached. Client card created in Command Center.</p>
   </div>
 </div>`,
-      }),
-    }).catch(e => console.error('Resend neal exec email error:', e));
+        }),
+      }).catch(e => console.error('Resend neal exec email error:', e)),
+    ]);
   }
 
   return {
