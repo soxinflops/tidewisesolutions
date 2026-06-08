@@ -1202,6 +1202,7 @@
         const { supabaseUrl, supabaseKey } = await res.json();
         sessionStorage.setItem('tw_url', supabaseUrl);
         sessionStorage.setItem('tw_key', supabaseKey);
+        sessionStorage.setItem('tw_pw', pw);
         startDash(supabaseUrl, supabaseKey);
       } catch {
         err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Authenticate';
@@ -1616,10 +1617,16 @@
 
     // ── Delete Tidewise client ────────────────────────────────────────
     async function deleteClient(clientId, name) {
-      const confirmed = confirm(`DELETE "${name}"?\n\nThis removes the company from the Command Center. It does NOT delete their leads or signed contracts.\n\nType-confirm: this cannot be undone.`);
+      const confirmed = confirm(`DELETE "${name}"?\n\nThis removes the company from the Command Center. It does NOT delete their leads or signed contracts.\n\nThis cannot be undone.`);
       if (!confirmed) return;
-      const { error } = await supabaseClient.from('tidewise_clients').delete().eq('client_id', clientId);
-      if (error) { alert('Delete failed: ' + error.message); return; }
+      const res = await fetch('/.netlify/functions/client-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: sessionStorage.getItem('tw_pw'), clientId }),
+      });
+      const data = await res.json();
+      if (!res.ok) { alert('Delete failed: ' + (data.error || 'Unknown error')); return; }
+      nukeAnimation('CLIENT');
       await loadTwClients();
     }
 
@@ -2078,7 +2085,7 @@
   function nukeAnimation(count) {
     const overlay = document.getElementById('nuke-overlay');
     const msg     = document.getElementById('nuke-msg');
-    msg.textContent = count === 0 ? 'ALREADY CLEAN' : `${count} LEAD${count !== 1 ? 'S' : ''} OBLITERATED`;
+    msg.textContent = count === 'CLIENT' ? 'CLIENT DELETED' : count === 0 ? 'ALREADY CLEAN' : `${count} LEAD${count !== 1 ? 'S' : ''} OBLITERATED`;
     overlay.classList.remove('boom');
     void overlay.offsetWidth; // force reflow to restart animation
     overlay.classList.add('boom');
