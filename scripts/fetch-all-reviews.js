@@ -7,29 +7,31 @@ const fs    = require('fs');
 const path  = require('path');
 
 const API_KEY    = process.env.SERPAPI_KEY;
-const MAX_REVIEWS = 6;
 const MIN_RATING  = 4;
 
 const BUSINESSES = [
   {
-    slug:     'ccst',
-    name:     'Coastal Carolina Synthetic Turf',
-    city:     'Leland, NC',
-    out:      '../data/ccst-reviews.json',
+    slug:        'ccst',
+    name:        'Coastal Carolina Synthetic Turf',
+    city:        'Leland, NC',
+    max_reviews: 6,
+    out:         '../data/ccst-reviews.json',
   },
   {
-    slug:     'htsw',
-    name:     'High Tide Soft Wash LLC',
-    city:     'NC',
-    place_id: 'ChIJY7s-sOVFaEMR0LyOL5wNr10',
-    ll:       '@34.1,-78.2,11z',
-    out:      '../data/htsw-reviews.json',
+    slug:        'htsw',
+    name:        'High Tide Soft Wash LLC',
+    city:        'NC',
+    place_id:    'ChIJY7s-sOVFaEMR0LyOL5wNr10',
+    ll:          '@34.1,-78.2,11z',
+    max_reviews: 25,
+    out:         '../data/htsw-reviews.json',
   },
   {
-    slug:     'tw',
-    name:     'Tidewise Solutions',
-    city:     'Leland, NC',
-    out:      '../data/tw-reviews.json',
+    slug:        'tw',
+    name:        'Tidewise Solutions',
+    city:        'Leland, NC',
+    max_reviews: 6,
+    out:         '../data/tw-reviews.json',
   },
 ];
 
@@ -77,20 +79,23 @@ async function fetchBusiness(biz) {
 
   console.log(`  Found: "${place.title}" | data_id: ${place.data_id} | (${place.rating ?? '?'} stars, ${place.reviews ?? 0} reviews)`);
 
-  // Step 2 — fetch reviews
-  const reviewResult = await serpGet({
-    engine:  'google_maps_reviews',
-    data_id: place.data_id,
-    hl:      'en',
-    gl:      'us',
-  });
+  // Step 2 — fetch reviews (paginate until we hit biz.max_reviews)
+  const rawReviews = [];
+  let nextToken = null;
+  do {
+    const params = { engine: 'google_maps_reviews', data_id: place.data_id, hl: 'en', gl: 'us' };
+    if (nextToken) params.next_page_token = nextToken;
+    const reviewResult = await serpGet(params);
+    const page = reviewResult.reviews || [];
+    rawReviews.push(...page);
+    nextToken = reviewResult.serpapi_pagination?.next_page_token || null;
+  } while (nextToken && rawReviews.length < biz.max_reviews);
 
-  const rawReviews = reviewResult.reviews || [];
-  console.log(`  Raw reviews: ${rawReviews.length}`);
+  console.log(`  Raw reviews fetched: ${rawReviews.length}`);
 
   const reviews = rawReviews
     .filter(r => r.rating >= MIN_RATING && r.snippet && r.snippet.trim().length > 30)
-    .slice(0, MAX_REVIEWS)
+    .slice(0, biz.max_reviews)
     .map(r => ({
       author: r.user?.name || 'Verified Customer',
       rating: r.rating,
