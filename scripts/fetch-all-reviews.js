@@ -21,6 +21,7 @@ const BUSINESSES = [
     slug:     'htsw',
     name:     'High Tide Soft Wash',
     city:     'Brunswick County, NC',
+    place_id: 'ChIJY7s-sOVFaEMR0LyOL5wNr10',
     out:      '../data/htsw-reviews.json',
   },
   {
@@ -61,9 +62,10 @@ async function fetchBusiness(biz) {
     type:   'search',
   });
 
-  const place = (mapResult.local_results || []).find(r =>
-    r.title && r.title.toLowerCase().includes(biz.name.split(' ')[0].toLowerCase())
-  ) || mapResult.local_results?.[0];
+  const results = mapResult.local_results || [];
+  const place = biz.place_id
+    ? results.find(r => r.place_id === biz.place_id) || results[0]
+    : results.find(r => r.title && r.title.toLowerCase().includes(biz.name.split(' ')[0].toLowerCase())) || results[0];
 
   if (!place?.data_id) {
     console.log(`  Not found in Maps — skipping (keeping existing file)`);
