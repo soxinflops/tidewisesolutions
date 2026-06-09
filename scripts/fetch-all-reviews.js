@@ -98,6 +98,11 @@ async function fetchBusiness(biz) {
       date:   r.iso_date_utc || r.iso_date || r.date || null,
     }));
 
+  if (reviews.length === 0) {
+    console.log(`  No valid reviews returned — keeping existing file unchanged`);
+    return { skipped: true };
+  }
+
   const out = {
     updated:       new Date().toISOString().split('T')[0],
     rating:        place.rating   ?? null,
@@ -108,16 +113,29 @@ async function fetchBusiness(biz) {
   const outPath = path.join(__dirname, biz.out);
   fs.writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
   console.log(`  Wrote ${reviews.length} review(s) → ${biz.out}`);
+  return { ok: true };
 }
 
 async function main() {
+  const failures = [];
+
   for (const biz of BUSINESSES) {
     try {
       await fetchBusiness(biz);
     } catch (err) {
       console.error(`  ERROR for ${biz.slug}: ${err.message}`);
+      failures.push(`${biz.slug}: ${err.message}`);
     }
   }
+
+  if (failures.length > 0) {
+    console.error(`\n⚠️  ${failures.length} business(es) failed to update:`);
+    failures.forEach(f => console.error(`  • ${f}`));
+    console.error('\nExisting JSON files were NOT modified. GitHub will send a failure email.');
+    process.exit(1);
+  }
+
+  console.log('\n✓ All businesses updated successfully.');
 }
 
 main();
