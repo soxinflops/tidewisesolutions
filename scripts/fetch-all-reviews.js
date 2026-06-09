@@ -20,7 +20,7 @@ const BUSINESSES = [
   {
     slug:     'htsw',
     name:     'High Tide Soft Wash LLC',
-    city:     'Brunswick County, NC',
+    city:     'NC',
     place_id: 'ChIJY7s-sOVFaEMR0LyOL5wNr10',
     out:      '../data/htsw-reviews.json',
   },
@@ -56,8 +56,7 @@ async function fetchBusiness(biz) {
   console.log(`\n── ${biz.name} ──`);
 
   // Step 1 — find the place to get data_id
-  // If place_id is known, search by it directly; otherwise search by name
-  const searchQuery = biz.place_id ? `place_id:${biz.place_id}` : `${biz.name} ${biz.city}`;
+  const searchQuery = [biz.name, biz.city].filter(Boolean).join(' ');
   const mapResult = await serpGet({
     engine: 'google_maps',
     q:      searchQuery,
