@@ -67,8 +67,8 @@ async function fetchBusiness(biz) {
 
   const results = mapResult.local_results || [];
   const place = biz.place_id
-    ? results.find(r => r.place_id === biz.place_id) || results[0]
-    : results.find(r => r.title && r.title.toLowerCase().includes(biz.name.split(' ')[0].toLowerCase())) || results[0];
+    ? results.find(r => r.place_id === biz.place_id) || results[0] || mapResult.place_results
+    : results.find(r => r.title && r.title.toLowerCase().includes(biz.name.split(' ')[0].toLowerCase())) || results[0] || mapResult.place_results;
 
   if (!place?.data_id) {
     console.log(`  Not found in Maps — skipping (keeping existing file)`);
