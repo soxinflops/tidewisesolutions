@@ -85,7 +85,6 @@ async function fetchBusiness(biz) {
     data_id: place.data_id,
     hl:      'en',
     gl:      'us',
-    num:     20,
   });
 
   const rawReviews = reviewResult.reviews || [];
