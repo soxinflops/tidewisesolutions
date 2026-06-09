@@ -2,5 +2,42 @@
   "updated": "2026-06-09",
   "rating": 5,
   "total_reviews": 22,
-  "reviews": []
+  "reviews": [
+    {
+      "author": "Mama Tried",
+      "rating": 5,
+      "text": "Josh was absolutely amazing!!! Honest, Godly and a first responder to boot. He not only communicated with me every time I emailed a question or concern, but got my 86yo Mom’s house and outbuilding white as snow, he then left to go to my Aunts & Uncles across Wilmington to give them a quote and started working the same day…can you find any better service?",
+      "date": "2026-01-14T01:17:43Z"
+    },
+    {
+      "author": "MIKEY PARKS",
+      "rating": 5,
+      "text": "He showed up on time and went above and beyond getting my house and sidewalk and driveway cleaned and looking NEW !! highly recommend !!!!",
+      "date": "2026-01-23T23:10:31Z"
+    },
+    {
+      "author": "Susan Chesson",
+      "rating": 5,
+      "text": "Josh was super efficient & communicative. Great service all around!",
+      "date": "2026-01-09T13:57:03Z"
+    },
+    {
+      "author": "Jason Bolen",
+      "rating": 5,
+      "text": "Josh is a quality guy and does quality work. What more could you ask for!? Shows up on time, does an incredible job, and all at a respectable price. Our house has never looked better. Thank you High Tide Soft Wash!",
+      "date": "2026-06-03T23:39:53Z"
+    },
+    {
+      "author": "BL Collins",
+      "rating": 5,
+      "text": "Our home sparkles like new! The customer walk around and review is a nice way to wrap up the job, excellent touch.",
+      "date": "2026-06-03T19:59:44Z"
+    },
+    {
+      "author": "Jacob Kidd",
+      "rating": 5,
+      "text": "They did a great job on my house and driveway! Great communication and timeliness all around.  Would recommend to anyone and will have them come back!",
+      "date": "2026-05-22T00:40:42Z"
+    }
+  ]
 }
