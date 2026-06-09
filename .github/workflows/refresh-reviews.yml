@@ -1,0 +1,29 @@
+name: Refresh All Client Reviews
+
+on:
+  schedule:
+    - cron: '0 6 * * 2,4,6'   # Tue/Thu/Sat at 6 AM UTC
+  workflow_dispatch:            # Manual trigger from GitHub Actions tab
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch reviews for all sites
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: node scripts/fetch-all-reviews.js
+
+      - name: Commit updated reviews
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet && echo "No changes" || git commit -m "chore: refresh Google reviews"
+          git push
