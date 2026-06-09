@@ -72,6 +72,8 @@ async function fetchBusiness(biz) {
 
   if (!place?.data_id) {
     console.log(`  Not found in Maps — skipping (keeping existing file)`);
+    console.log(`  Debug: local_results count=${results.length}, keys=${results[0] ? Object.keys(results[0]).join(',') : 'none'}`);
+    console.log(`  Debug: search_information=${JSON.stringify(mapResult.search_information)}`);
     return;
   }
 
