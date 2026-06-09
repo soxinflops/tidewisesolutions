@@ -19,7 +19,7 @@ const BUSINESSES = [
   },
   {
     slug:     'htsw',
-    name:     'High Tide Soft Wash',
+    name:     'High Tide Soft Wash LLC',
     city:     'Brunswick County, NC',
     place_id: 'ChIJY7s-sOVFaEMR0LyOL5wNr10',
     out:      '../data/htsw-reviews.json',
