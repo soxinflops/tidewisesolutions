@@ -2,5 +2,12 @@
   "updated": "2026-06-09",
   "rating": 5,
   "total_reviews": 1,
-  "reviews": []
+  "reviews": [
+    {
+      "author": "Brian",
+      "rating": 5,
+      "text": "Justin and Matt with Coastal Carolina Synthetic Turf recently did my entire backyard here at Sunset Beach. I never had turf in previous homes — once they installed it, I realized what I've been missing all these years. It is an absolutely amazing product. I'm extremely happy with the turnout and the zero maintenance and year-round green. My dog Eddie absolutely loves it as well. Extremely professional, great guys to work with. Would highly recommend.",
+      "date": "2026-06-09"
+    }
+  ]
 }
