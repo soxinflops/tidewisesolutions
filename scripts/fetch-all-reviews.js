@@ -56,9 +56,11 @@ async function fetchBusiness(biz) {
   console.log(`\n── ${biz.name} ──`);
 
   // Step 1 — find the place to get data_id
+  // If place_id is known, search by it directly; otherwise search by name
+  const searchQuery = biz.place_id ? `place_id:${biz.place_id}` : `${biz.name} ${biz.city}`;
   const mapResult = await serpGet({
     engine: 'google_maps',
-    q:      `${biz.name} ${biz.city}`,
+    q:      searchQuery,
     type:   'search',
   });
 
