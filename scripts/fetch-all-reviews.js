@@ -72,8 +72,6 @@ async function fetchBusiness(biz) {
 
   if (!place?.data_id) {
     console.log(`  Not found in Maps — skipping (keeping existing file)`);
-    console.log(`  Debug: local_results count=${results.length}, keys=${results[0] ? Object.keys(results[0]).join(',') : 'none'}`);
-    console.log(`  Debug: search_information=${JSON.stringify(mapResult.search_information)}`);
     return;
   }
 
@@ -88,8 +86,7 @@ async function fetchBusiness(biz) {
   });
 
   const rawReviews = reviewResult.reviews || [];
-  console.log(`  Raw reviews: ${rawReviews.length} | top-level keys: ${Object.keys(reviewResult).join(',')}`);
-  if (rawReviews.length === 0) console.log(`  Review result sample: ${JSON.stringify(reviewResult).slice(0,300)}`);
+  console.log(`  Raw reviews: ${rawReviews.length}`);
 
   const reviews = rawReviews
     .filter(r => r.rating >= MIN_RATING && r.snippet && r.snippet.trim().length > 30)
