@@ -1,30 +1,45 @@
 {
   "home": [
     {
-      "author": "MIKEY PARKS",
-      "text": "He showed up on time and went above and beyond getting my house and sidewalk and driveway cleaned and looking NEW !! highly recommend !!!!",
+      "author": "Susan Chesson",
+      "text": "Josh was super efficient & communicative. Great service all around!",
       "rating": 5
     },
     {
-      "author": "Susan Chesson",
-      "text": "Josh was super efficient & communicative. Great service all around!",
+      "author": "Justin",
+      "text": "High Tide Soft Wash did a fantastic job power washing the house. He was courteous, respectful and timely. Would recommend anyone to reach out for a quote.",
       "rating": 5
     },
     {
       "author": "BL Collins",
       "text": "Our home sparkles like new! The customer walk around and review is a nice way to wrap up the job, excellent touch.",
       "rating": 5
+    },
+    {
+      "author": "Jacob Kidd",
+      "text": "They did a great job on my house and driveway! Great communication and timeliness all around. Would recommend to anyone and will have them come back!",
+      "rating": 5
     }
   ],
   "contact": [
+    {
+      "author": "MIKEY PARKS",
+      "text": "He showed up on time and went above and beyond getting my house and sidewalk and driveway cleaned and looking NEW !! highly recommend !!!!",
+      "rating": 5
+    },
+    {
+      "author": "Justin",
+      "text": "High Tide Soft Wash did a fantastic job power washing the house. He was courteous, respectful and timely. Would recommend anyone to reach out for a quote.",
+      "rating": 5
+    },
     {
       "author": "Jason Bolen",
       "text": "Josh is a quality guy and does quality work. What more could you ask for!? Shows up on time, does an incredible job, and all at a respectable price. Our house has never looked better. Thank you High Tide Soft Wash!",
       "rating": 5
     },
     {
-      "author": "Jacob Kidd",
-      "text": "They did a great job on my house and driveway! Great communication and timeliness all around.  Would recommend to anyone and will have them come back!",
+      "author": "Justin Bridge",
+      "text": "Josh did a great job cleaning our home. He taped off doors, fixtures, and anything else he was worried about getting wet. He even went as far as to cover our porch shade on the back of the house to ensure it didn't discolor. Solid effort, fantastic job. Couldn't ask for anything beyond that. Would recommend!",
       "rating": 5
     }
   ]
