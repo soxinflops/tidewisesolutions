@@ -22,6 +22,7 @@ const BUSINESSES = [
     name:     'High Tide Soft Wash LLC',
     city:     'NC',
     place_id: 'ChIJY7s-sOVFaEMR0LyOL5wNr10',
+    ll:       '@34.1,-78.2,11z',
     out:      '../data/htsw-reviews.json',
   },
   {
@@ -61,6 +62,7 @@ async function fetchBusiness(biz) {
     engine: 'google_maps',
     q:      searchQuery,
     type:   'search',
+    ...(biz.ll ? { ll: biz.ll } : {}),
   });
 
   const results = mapResult.local_results || [];
