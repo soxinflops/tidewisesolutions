@@ -89,7 +89,8 @@ async function fetchBusiness(biz) {
   });
 
   const rawReviews = reviewResult.reviews || [];
-  console.log(`  Raw reviews: ${rawReviews.length}`);
+  console.log(`  Raw reviews: ${rawReviews.length} | top-level keys: ${Object.keys(reviewResult).join(',')}`);
+  if (rawReviews.length === 0) console.log(`  Review result sample: ${JSON.stringify(reviewResult).slice(0,300)}`);
 
   const reviews = rawReviews
     .filter(r => r.rating >= MIN_RATING && r.snippet && r.snippet.trim().length > 30)
