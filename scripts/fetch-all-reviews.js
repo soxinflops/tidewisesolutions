@@ -70,13 +70,14 @@ async function fetchBusiness(biz) {
     return;
   }
 
-  console.log(`  Found: "${place.title}" (${place.rating ?? '?'} stars, ${place.reviews ?? 0} reviews)`);
+  console.log(`  Found: "${place.title}" | data_id: ${place.data_id} | (${place.rating ?? '?'} stars, ${place.reviews ?? 0} reviews)`);
 
   // Step 2 — fetch reviews
   const reviewResult = await serpGet({
     engine:  'google_maps_reviews',
     data_id: place.data_id,
-    sort_by: 'qualityScore',
+    hl:      'en',
+    gl:      'us',
     num:     20,
   });
 
