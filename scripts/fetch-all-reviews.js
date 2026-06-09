@@ -83,7 +83,7 @@ async function fetchBusiness(biz) {
   const rawReviews = [];
   let nextToken = null;
   do {
-    const params = { engine: 'google_maps_reviews', data_id: place.data_id, hl: 'en', gl: 'us' };
+    const params = { engine: 'google_maps_reviews', data_id: place.data_id, hl: 'en', gl: 'us', sort_by: 'qualityScore' };
     if (nextToken) params.next_page_token = nextToken;
     const reviewResult = await serpGet(params);
     const page = reviewResult.reviews || [];
@@ -108,6 +108,16 @@ async function fetchBusiness(biz) {
     return { skipped: true };
   }
 
+  // Never write fewer reviews than we already have on disk
+  const outPath = path.join(__dirname, biz.out);
+  if (fs.existsSync(outPath)) {
+    const existing = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+    if (reviews.length < (existing.reviews?.length ?? 0)) {
+      console.log(`  Got ${reviews.length} but had ${existing.reviews.length} — keeping existing file (likely a pagination miss)`);
+      return { skipped: true };
+    }
+  }
+
   const out = {
     updated:       new Date().toISOString().split('T')[0],
     rating:        place.rating   ?? null,
@@ -115,7 +125,6 @@ async function fetchBusiness(biz) {
     reviews,
   };
 
-  const outPath = path.join(__dirname, biz.out);
   fs.writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
   console.log(`  Wrote ${reviews.length} review(s) → ${biz.out}`);
   return { ok: true };
