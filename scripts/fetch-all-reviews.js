@@ -32,6 +32,7 @@ const BUSINESSES = [
     slug:        'tw',
     name:        'Tidewise Solutions',
     city:        'Leland, NC',
+    skip:        true,
     max_reviews: 6,
     out:         '../data/tw-reviews.json',
   },
