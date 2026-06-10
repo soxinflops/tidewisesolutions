@@ -1199,11 +1199,13 @@
           body: JSON.stringify({ password: pw }),
         });
         if (!res.ok) throw new Error();
-        const { supabaseUrl, supabaseKey } = await res.json();
+        const { supabaseUrl, supabaseKey, accessToken, refreshToken } = await res.json();
         sessionStorage.setItem('tw_url', supabaseUrl);
         sessionStorage.setItem('tw_key', supabaseKey);
+        sessionStorage.setItem('tw_access', accessToken);
+        sessionStorage.setItem('tw_refresh', refreshToken);
         sessionStorage.setItem('tw_pw', pw);
-        startDash(supabaseUrl, supabaseKey);
+        startDash(supabaseUrl, supabaseKey, accessToken, refreshToken);
       } catch {
         err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Authenticate';
       }
@@ -1217,14 +1219,19 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
-      const url = sessionStorage.getItem('tw_url');
-      const key = sessionStorage.getItem('tw_key');
-      if (url && key) startDash(url, key);
+      const url     = sessionStorage.getItem('tw_url');
+      const key     = sessionStorage.getItem('tw_key');
+      const access  = sessionStorage.getItem('tw_access');
+      const refresh = sessionStorage.getItem('tw_refresh');
+      if (url && key) startDash(url, key, access, refresh);
     });
 
     // ── Init ──────────────────────────────────────────────────────────
-    async function startDash(url, key) {
+    async function startDash(url, key, accessToken, refreshToken) {
       supabaseClient = window.supabase.createClient(url, key);
+      if (accessToken && refreshToken) {
+        await supabaseClient.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+      }
       document.getElementById('pwScreen').style.display = 'none';
       document.getElementById('dash').style.display = 'block';
       tickClock();

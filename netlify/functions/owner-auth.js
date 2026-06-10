@@ -9,12 +9,32 @@ exports.handler = async (event) => {
   if (!body.password || body.password !== process.env.OWNER_DASHBOARD_PASSWORD) {
     return { statusCode: 401, body: JSON.stringify({ error: 'Invalid password' }) };
   }
+
+  // Sign into Supabase Auth as owner — returns a real authenticated session
+  const authRes = await fetch(
+    `${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`,
+    {
+      method: 'POST',
+      headers: {
+        'apikey': process.env.SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: process.env.SUPABASE_OWNER_EMAIL,
+        password: process.env.SUPABASE_OWNER_PASSWORD,
+      }),
+    }
+  );
+  const session = await authRes.json();
+
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_ANON_KEY,
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token,
     }),
   };
 };
