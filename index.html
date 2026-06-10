@@ -62,7 +62,17 @@
 
   <!-- BANNER -->
   <div class="banner">
-    <img src="banner.png" alt="Oggie the Octopus with his laptop on the beach" />
+    <picture>
+      <source type="image/webp"
+        srcset="banner-small.webp 640w,
+                banner-medium.webp 1024w,
+                banner-large.webp 1320w"
+        sizes="100vw" />
+      <img src="banner-medium.jpg"
+           alt="Oggie the Octopus with his laptop on the beach"
+           width="1320" height="320"
+           loading="eager" />
+    </picture>
   </div>
 
   <!-- HERO -->
