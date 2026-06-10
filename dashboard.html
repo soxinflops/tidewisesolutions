@@ -1040,7 +1040,7 @@
       <table class="leads-table">
         <thead>
           <tr>
-            <th>Date</th><th>Name</th><th>Project Type</th><th>Size</th><th>Source</th><th>Message</th><th>Status <button onclick="nukeClientLeads()" style="background:none;border:none;cursor:pointer;font-size:0.95rem;padding:0 0 0 4px;vertical-align:middle;color:#E05A2B;filter:drop-shadow(0 0 4px rgba(224,90,43,0.5));transition:filter 0.2s;" title="Nuke all leads for this client" onmouseover="this.style.filter='drop-shadow(0 0 8px rgba(224,90,43,0.9))'" onmouseout="this.style.filter='drop-shadow(0 0 4px rgba(224,90,43,0.5))'">☢</button></th><th></th>
+            <th>Date</th><th>Name</th><th>Service Address</th><th>Project Type</th><th>Size</th><th>Source</th><th>Message</th><th>Status <button onclick="nukeClientLeads()" style="background:none;border:none;cursor:pointer;font-size:0.95rem;padding:0 0 0 4px;vertical-align:middle;color:#E05A2B;filter:drop-shadow(0 0 4px rgba(224,90,43,0.5));transition:filter 0.2s;" title="Nuke all leads for this client" onmouseover="this.style.filter='drop-shadow(0 0 8px rgba(224,90,43,0.9))'" onmouseout="this.style.filter='drop-shadow(0 0 4px rgba(224,90,43,0.5))'">☢</button></th><th></th>
           </tr>
         </thead>
         <tbody id="detailLeadsBody"></tbody>
@@ -1764,7 +1764,7 @@
       });
       const tbody = document.getElementById('detailLeadsBody');
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">No leads for this month.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">No leads for this month.</td></tr>`;
         return;
       }
       window._ldMsgs = {};
@@ -1812,6 +1812,7 @@
 
         return `<tr class="${rowClass}">
           <td>${date}</td><td class="td-name">${esc(l.name)}</td>
+          <td>${esc(l.service_address||'—')}</td>
           <td>${esc(l.project_type||'—')}</td><td>${esc(l.square_footage||'—')}</td>
           <td>${esc(l.traffic_source||'—')}</td>
           <td>${msgCell}</td>
@@ -1972,14 +1973,17 @@
     }
 
     function buildMailto(lead, decision) {
-      const isValid = decision === 'valid';
+      const isValid  = decision === 'valid';
+      const client   = twClients.find(c => c.client_id === activeClient);
+      const toEmail  = client?.email || '';
+      const greeting = client?.name ? `Hi ${client.name} team,` : 'Hi,';
       const subj = isValid
         ? `Lead Dispute Rejected — ${lead.name}`
         : `Lead Dispute Approved — ${lead.name}`;
       const body = isValid
-        ? `Hi Matt & Justin,\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was rejected.\n\n`
-        : `Hi Matt & Justin,\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was approved.\n\n`;
-      return `mailto:justin@ccstoib.com,matt@ccstoib.com?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+        ? `${greeting}\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was rejected.\n\n`
+        : `${greeting}\n\nThe dispute for ${lead.name} (${lead.email} · ${lead.project_type||'—'}) was approved.\n\n`;
+      return `mailto:${encodeURIComponent(toEmail)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
     }
 
     async function nukeClientLeads() {

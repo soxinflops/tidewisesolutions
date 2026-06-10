@@ -14,6 +14,8 @@ const BUSINESSES = [
     slug:        'ccst',
     name:        'Coastal Carolina Synthetic Turf',
     city:        'Leland, NC',
+    place_id:    null,  // TODO: set real place_id from Matt's Google Maps listing, then remove skip
+    skip:        true,
     max_reviews: 6,
     out:         '../data/ccst-reviews.json',
   },
@@ -57,6 +59,11 @@ function serpGet(params) {
 
 async function fetchBusiness(biz) {
   console.log(`\n── ${biz.name} ──`);
+
+  if (biz.skip) {
+    console.log(`  Skipped (manually maintained — no place_id available for SAB)`);
+    return { skipped: true };
+  }
 
   // Step 1 — find the place to get data_id
   const searchQuery = [biz.name, biz.city].filter(Boolean).join(' ');
