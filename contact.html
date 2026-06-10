@@ -623,7 +623,13 @@
 
     <!-- OGGY SIDE -->
     <div class="oggy-side">
-      <img src="ufoggie_ride.png" alt="Oggy the Octopus holding a sign that says Let's Ride — Tidewise Solutions mascot" />
+      <picture>
+        <source type="image/webp"
+          srcset="ufoggie_ride-sm.webp 400w,
+                  ufoggie_ride-lg.webp 800w"
+          sizes="(max-width: 640px) 100vw, 400px" />
+        <img src="ufoggie_ride-sm.png" alt="Oggy the Octopus holding a sign that says Let's Ride — Tidewise Solutions mascot" />
+      </picture>
     </div>
 
   </div><!-- /.contact-wrap -->
