@@ -21,7 +21,10 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         email: process.env.SUPABASE_OWNER_EMAIL,
-        password: process.env.SUPABASE_OWNER_PASSWORD,
+        // NOTE: the Netlify env var is misspelled "OWNE" (no R). It holds the
+        // correct Supabase owner-account password, so we read it as-is rather
+        // than recreating the var. Fix the env var name later if convenient.
+        password: process.env.SUPABASE_OWNE_PASSWORD,
       }),
     }
   );
