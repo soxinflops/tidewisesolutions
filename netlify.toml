@@ -13,6 +13,11 @@
   # Omitting them from value-scanning stops false failures. Real secrets
   # (passwords, service key, Stripe, tokens) are NOT listed and stay scanned.
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_OWNER_EMAIL,SUPABASE_URL,SUPABASE_ANON_KEY"
+  # Third-party dependency folders are not our code and are not deployed to the
+  # browser. The scanner finds OWNER_DASHBOARD_PASSWORD's value as a coincidental
+  # byte-substring inside vendored libs (pdfkit, prettier, the chrome binary, etc.).
+  # Skip those folders; our own source + built output is still scanned for secrets.
+  SECRETS_SCAN_OMIT_PATHS = "node_modules/**,.netlify/**"
 
 [functions]
   external_node_modules = ["pdfkit"]
