@@ -4,10 +4,15 @@
   functions = "netlify/functions"
 
 [build.environment]
-  # Disable ONLY the heuristic "smart" secret detector. It false-positives on the
-  # column name `square_footage` (the `re_footage` substring matches Resend's `re_`
-  # key prefix). Value-based scanning for our real configured secrets stays ON.
+  # Disable ONLY the heuristic "smart" secret detector (catches key-shaped strings).
   SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
+  # These env vars are PUBLIC by design and legitimately appear in deployed files:
+  #   SUPABASE_OWNER_EMAIL  -> neal@tidewisesolutions.com (contact email, in HTML/schema)
+  #   SUPABASE_URL          -> public project URL
+  #   SUPABASE_ANON_KEY     -> public client key
+  # Omitting them from value-scanning stops false failures. Real secrets
+  # (passwords, service key, Stripe, tokens) are NOT listed and stay scanned.
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_OWNER_EMAIL,SUPABASE_URL,SUPABASE_ANON_KEY"
 
 [functions]
   external_node_modules = ["pdfkit"]
