@@ -300,6 +300,42 @@ body {
   transition: color 0.2s;
 }
 .footer-nav a:hover { color: var(--white); }
+
+/* ── SERVICE AREAS ── */
+.footer-service-areas {
+  flex: 1;
+  text-align: center;
+  padding: 0 24px;
+  font-family: 'Open Sans', sans-serif;
+}
+.footer-service-areas h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--sand);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+.footer-service-areas p {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.8;
+  max-width: 850px;
+  margin: 8px auto 0;
+}
+.footer-service-areas strong {
+  color: var(--white);
+  font-weight: 700;
+  display: inline-block;
+  margin-right: 4px;
+}
+.footer-service-areas span.bullet {
+  color: rgba(255,255,255,0.3);
+  margin: 0 8px;
+  display: inline-block;
+}
+
 .footer-mascot {
   display: flex;
   align-items: center;
