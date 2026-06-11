@@ -3,5 +3,11 @@
   command = ""
   functions = "netlify/functions"
 
+[build.environment]
+  # Disable ONLY the heuristic "smart" secret detector. It false-positives on the
+  # column name `square_footage` (the `re_footage` substring matches Resend's `re_`
+  # key prefix). Value-based scanning for our real configured secrets stays ON.
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
+
 [functions]
   external_node_modules = ["pdfkit"]
