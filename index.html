@@ -63,20 +63,13 @@
   <!-- BANNER -->
   <div class="banner">
     <picture>
-      <source type="image/webp"
-        srcset="banner-small.webp 640w,
-                banner-medium.webp 1024w,
-                banner-large.webp 1320w"
-        sizes="100vw" />
-      <source type="image/jpeg"
-        srcset="banner-small.jpg 640w,
-                banner-medium.jpg 1024w,
-                banner-large.jpg 1320w"
-        sizes="100vw" />
-      <img src="banner-medium.jpg"
+      <source media="(max-width:480px)"  type="image/webp" srcset="banner-small.webp" />
+      <source media="(max-width:1024px)" type="image/webp" srcset="banner-medium.webp" />
+      <source type="image/webp" srcset="banner-large.webp" />
+      <img src="banner-fallback.jpg"
            alt="Oggie the Octopus with his laptop on the beach"
            width="1320" height="320"
-           loading="eager" />
+           loading="eager" fetchpriority="high" />
     </picture>
   </div>
 
