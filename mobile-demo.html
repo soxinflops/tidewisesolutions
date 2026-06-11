@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Tidewise Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal-dark: #1A6E7E;
+      --teal-mid:  #1E9DB8;
+      --teal-lite: #46C3D6;
+      --teal-pale: #E4F4F8;
+      --orange:    #E05A2B;
+      --sand:      #F5D98A;
+      --green:     #2BB673;
+      --ink:       #123642;
+      --ink-soft:  #5E7B85;
+      --line:      rgba(26,110,126,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(170deg, #EAF7FA 0%, #F4FBFC 38%, #FFFFFF 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 430px;
+      padding: 0 16px 22px;
+    }
+
+    /* ── HEADER ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 4px 14px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .brand-mark {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--teal-mid), var(--teal-dark));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(30,157,184,0.32);
+    }
+    .brand-mark svg { width: 19px; height: 19px; fill: #fff; }
+    .brand-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.02rem;
+      letter-spacing: -0.01em;
+      color: var(--teal-dark);
+      line-height: 1;
+    }
+    .brand-sub {
+      font-size: 0.62rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sand), #F0C75E);
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--teal-dark);
+    }
+
+    /* ── GREETING ── */
+    .greeting-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin: 6px 4px 16px;
+    }
+    .greeting h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .greeting p {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+    .date-select {
+      position: relative;
+    }
+    .date-select select {
+      appearance: none;
+      -webkit-appearance: none;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.74rem;
+      color: var(--teal-dark);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 30px 9px 13px;
+      box-shadow: 0 2px 8px rgba(26,110,126,0.07);
+      cursor: pointer;
+    }
+    .date-select::after {
+      content: '';
+      position: absolute;
+      right: 12px; top: 50%;
+      width: 7px; height: 7px;
+      border-right: 2px solid var(--teal-mid);
+      border-bottom: 2px solid var(--teal-mid);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    /* ── STAT TILES ── */
+    .tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+      margin-bottom: 13px;
+    }
+    .tile {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 14px 13px;
+      box-shadow: 0 6px 18px rgba(26,110,126,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--teal-mid), var(--teal-lite));
+    }
+    .tile.t-orange::before { background: linear-gradient(90deg, var(--orange), #F0814F); }
+    .tile.t-green::before  { background: linear-gradient(90deg, var(--green), #4FCF8E); }
+    .tile.t-sand::before   { background: linear-gradient(90deg, #E6B84B, var(--sand)); }
+    .tile-label {
+      font-size: 0.66rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tile-icon {
+      width: 15px; height: 15px;
+      opacity: 0.85;
+    }
+    .tile-value {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.62rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-top: 7px;
+      line-height: 1;
+    }
+    .delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 20px;
+    }
+    .delta.up   { color: var(--green);  background: rgba(43,182,115,0.12); }
+    .delta.down { color: var(--orange); background: rgba(224,90,43,0.12); }
+    .delta svg { width: 9px; height: 9px; }
+
+    /* ── GRAPHS ── */
+    .graphs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+      margin-bottom: 13px;
+    }
+    .graph-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 13px 9px;
+      box-shadow: 0 6px 18px rgba(26,110,126,0.06);
+    }
+    .graph-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+    .graph-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    .graph-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--teal-dark);
+    }
+    .graph-card svg.chart { width: 100%; height: 56px; display: block; }
+
+    /* ── OGGIE INSIGHT ── */
+    .insight {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      background: linear-gradient(135deg, var(--teal-dark), var(--teal-mid));
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 26px rgba(26,110,126,0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .insight::after {
+      content: '';
+      position: absolute;
+      right: -40px; bottom: -50px;
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .insight img {
+      width: 58px; height: 58px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+      z-index: 1;
+    }
+    .insight-text { z-index: 1; }
+    .insight-text .who {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--sand);
+      margin-bottom: 4px;
+    }
+    .insight-text p {
+      font-size: 0.8rem;
+      font-weight: 500;
+      line-height: 1.4;
+      color: #fff;
+    }
+    .insight-text strong { font-weight: 800; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+
+    <!-- HEADER -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24"><path d="M3 14c1.5 0 1.5-1.4 3-1.4s1.5 1.4 3 1.4 1.5-1.4 3-1.4 1.5 1.4 3 1.4 1.5-1.4 3-1.4 1.5 1.4 3 1.4v2.2c-1.5 0-1.5 1.4-3 1.4s-1.5-1.4-3-1.4-1.5 1.4-3 1.4-1.5-1.4-3-1.4-1.5 1.4-3 1.4-1.5-1.4-3-1.4V14zm9-9a4 4 0 0 1 4 4v1.3c-.9-.4-1.6-.3-2.2.1-.5.3-.8.5-1.3.5V9a.5.5 0 0 0-1 0v1.9c-.5 0-.8-.2-1.3-.5-.6-.4-1.3-.5-2.2-.1V9a4 4 0 0 1 4-4z"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">Tidewise</div>
+          <div class="brand-sub">Client Dashboard</div>
+        </div>
+      </div>
+      <div class="avatar">JM</div>
+    </div>
+
+    <!-- GREETING -->
+    <div class="greeting-row">
+      <div class="greeting">
+        <h1>Welcome back!</h1>
+        <p>Here's how your tide is rising.</p>
+      </div>
+      <div class="date-select">
+        <select aria-label="Time period">
+          <option>June 2026</option>
+          <option>May 2026</option>
+          <option>Year to Date</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- STAT TILES -->
+    <div class="tiles">
+      <div class="tile">
+        <div class="tile-label">New Leads</div>
+        <div class="tile-value">142</div>
+        <span class="delta up"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H7v3H5V7H2z"/></svg>23%</span>
+      </div>
+      <div class="tile t-orange">
+        <div class="tile-label">Bookings</div>
+        <div class="tile-value">38</div>
+        <span class="delta up"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H7v3H5V7H2z"/></svg>12%</span>
+      </div>
+      <div class="tile t-green">
+        <div class="tile-label">Conversion</div>
+        <div class="tile-value">26.8%</div>
+        <span class="delta up"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H7v3H5V7H2z"/></svg>4.2%</span>
+      </div>
+      <div class="tile t-sand">
+        <div class="tile-label">Est. Value</div>
+        <div class="tile-value">$9.8k</div>
+        <span class="delta up"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 2l4 5H7v3H5V7H2z"/></svg>18%</span>
+      </div>
+    </div>
+
+    <!-- GRAPHS -->
+    <div class="graphs">
+      <div class="graph-card">
+        <div class="graph-head">
+          <span class="graph-title">Leads</span>
+          <span class="graph-num">↑ 6mo</span>
+        </div>
+        <svg class="chart" viewBox="0 0 160 56" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gLeads" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1E9DB8" stop-opacity="0.32"/>
+              <stop offset="1" stop-color="#1E9DB8" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,42 L27,38 L53,40 L80,28 L107,30 L133,17 L160,9 L160,56 L0,56 Z" fill="url(#gLeads)"/>
+          <path d="M0,42 L27,38 L53,40 L80,28 L107,30 L133,17 L160,9" fill="none" stroke="#1E9DB8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="160" cy="9" r="3.4" fill="#1E9DB8" stroke="#fff" stroke-width="1.6"/>
+        </svg>
+      </div>
+      <div class="graph-card">
+        <div class="graph-head">
+          <span class="graph-title">Site Traffic</span>
+          <span class="graph-num">↑ 6mo</span>
+        </div>
+        <svg class="chart" viewBox="0 0 160 56" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gTraffic" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#E05A2B" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#E05A2B" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,40 L27,34 L53,38 L80,26 L107,30 L133,20 L160,13 L160,56 L0,56 Z" fill="url(#gTraffic)"/>
+          <path d="M0,40 L27,34 L53,38 L80,26 L107,30 L133,20 L160,13" fill="none" stroke="#E05A2B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="160" cy="13" r="3.4" fill="#E05A2B" stroke="#fff" stroke-width="1.6"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- OGGIE INSIGHT -->
+    <div class="insight">
+      <img src="oggie-analyst.png" alt="Oggie, your AI analyst" />
+      <div class="insight-text">
+        <div class="who">Oggie's Insight</div>
+        <p>Leads are up <strong>23%</strong> this month — <strong>Holden Beach</strong> is your hottest area. 🌊</p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
