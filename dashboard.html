@@ -2123,9 +2123,15 @@
       if (!confirm(`Delete lead for "${l.name}"?\n\nThis cannot be undone.`)) return;
       const btn = document.getElementById('ldDelete');
       btn.disabled = true; btn.textContent = 'Deleting…';
-      const { error } = await supabaseClient.from('leads').delete().eq('id', ldActiveId);
+      const pw = sessionStorage.getItem('tw_pw');
+      const res = await fetch('/.netlify/functions/delete-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId: ldActiveId, password: pw }),
+      });
+      const result = await res.json();
       btn.disabled = false; btn.textContent = 'Delete Lead';
-      if (error) { alert('Delete failed: ' + error.message); return; }
+      if (!result.ok) { alert('Delete failed: ' + (result.error || 'Unknown error')); return; }
       document.getElementById('leadDetailModal').classList.remove('open');
       allLeads = allLeads.filter(l => l.id !== ldActiveId);
       updateStats(); renderFeed(allLeads.slice(0,25)); renderTwCards();
