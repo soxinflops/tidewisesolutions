@@ -1515,7 +1515,7 @@
       const curYM = ymk(new Date());
       document.getElementById('twList').innerHTML = twClients.map(c => {
         const cl     = allLeads.filter(l => l.client_id === c.client_id);
-        const mo     = cl.filter(l => ymk(new Date(l.created_at)) === curYM).length;
+        const mo     = cl.filter(l => ymk(new Date(l.created_at)) === curYM && l.status !== 'dispute_accepted' && l.status !== 'duplicate' && l.status !== 'invalid').length;
         const dispCt = cl.filter(l => l.status === 'disputed').length;
         const tier   = TIERS[c.tier] || TIERS['safe-harbor'];
         const typeChip = c.lead_type === 'project'
