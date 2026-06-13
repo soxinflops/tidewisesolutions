@@ -1162,6 +1162,23 @@
     </div>
   </div>
 
+  <!-- Lead Detail Modal -->
+  <div class="modal-overlay" id="leadDetailModal">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-title" id="ldName"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;" id="ldStatusRow"></div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:6px 12px;font-size:0.88rem;margin-bottom:1.2rem;" id="ldGrid"></div>
+      <div id="ldMsgWrap" style="display:none;margin-bottom:1.2rem;">
+        <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Message</div>
+        <div id="ldMsg" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px 12px;font-size:0.88rem;color:var(--text-mid);line-height:1.5;white-space:pre-wrap;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" id="ldClose">Close</button>
+        <button class="btn-save-modal" id="ldDelete" style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);">Delete Lead</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ── Config ────────────────────────────────────────────────────────
     const TIERS = {
@@ -1793,14 +1810,14 @@
             : '';
           actions = `${reasonHtml}
             <button class="action-btn" style="background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.3);"
-                    onclick="setStatus('${l.id}','invalid')">Confirm Dispute</button>
+                    onclick="event.stopPropagation();setStatus('${l.id}','invalid')">Confirm Dispute</button>
             <button class="action-btn" style="background:rgba(61,220,132,0.12);color:var(--green);border-color:rgba(61,220,132,0.3);"
-                    onclick="setStatus('${l.id}','valid')">Deny Dispute</button>`;
+                    onclick="event.stopPropagation();setStatus('${l.id}','valid')">Deny Dispute</button>`;
         } else if (isValid || isInvalid) {
           const undoStatus = isValid ? 'new' : 'disputed';
           actions = `
-            <a class="mail-btn" href="${buildMailto(l, isValid ? 'valid' : 'invalid')}" title="Email decision">✉</a>
-            <button class="undo-btn" onclick="setStatus('${l.id}','${undoStatus}')">↩ Undo</button>`;
+            <a class="mail-btn" href="${buildMailto(l, isValid ? 'valid' : 'invalid')}" title="Email decision" onclick="event.stopPropagation()">✉</a>
+            <button class="undo-btn" onclick="event.stopPropagation();setStatus('${l.id}','${undoStatus}')">↩ Undo</button>`;
         }
 
         const statusMap = {
@@ -1814,17 +1831,17 @@
         };
         const [statusLabel, statusClass] = statusMap[l.status] || [l.status, 's-new'];
 
-        const msgCell  = l.message ? `<button class="msg-peek-btn" onclick="showLeadText('${l.id}','msg')">View</button>` : '—';
+        const msgCell  = l.message ? `<button class="msg-peek-btn" onclick="event.stopPropagation();showLeadText('${l.id}','msg')">View</button>` : '—';
         const rowClass = disputed ? 'row-disputed' : isInvalid ? 'row-invalid' : isDuplicate ? 'row-invalid' : '';
 
-        return `<tr class="${rowClass}">
+        return `<tr class="${rowClass}" style="cursor:pointer;" onclick="openLeadDetail('${l.id}')">
           <td>${date}</td><td class="td-name">${esc(l.name)}</td>
           <td>${esc(l.service_address||'—')}</td>
           <td>${esc(l.project_type||'—')}</td><td>${esc(l.square_footage||'—')}</td>
           <td>${esc(l.traffic_source||'—')}</td>
           <td>${msgCell}</td>
           <td>${l.status === 'new'
-            ? `<button class="s-pill s-new" onclick="setStatus('${l.id}','valid')" title="Click to mark valid" style="border:none;cursor:pointer;">New</button>`
+            ? `<button class="s-pill s-new" onclick="event.stopPropagation();setStatus('${l.id}','valid')" title="Click to mark valid" style="border:none;cursor:pointer;">New</button>`
             : `<span class="s-pill ${statusClass}">${statusLabel}</span>`
           }</td>
           <td style="white-space:nowrap;">${actions}</td>
@@ -2058,6 +2075,61 @@
       const [y,m,day] = d.split('-');
       return new Date(y,m-1,day).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     }
+
+    // ── Lead Detail Modal ─────────────────────────────────────────────
+    let ldActiveId = null;
+
+    function openLeadDetail(id) {
+      const l = allLeads.find(l => l.id === id);
+      if (!l) return;
+      ldActiveId = id;
+
+      const client = twClients.find(c => c.client_id === l.client_id);
+      document.getElementById('ldName').textContent = l.name;
+
+      const statusMap = { new:'New', valid:'Valid', approved:'Valid', disputed:'Disputed', invalid:'Invalid', denied:'Invalid', duplicate:'Duplicate' };
+      document.getElementById('ldStatusRow').innerHTML =
+        `<span class="s-pill s-${l.status === 'valid'||l.status === 'approved' ? 'approved' : l.status === 'invalid'||l.status === 'denied' ? 'denied' : l.status}">${statusMap[l.status]||l.status}</span>` +
+        `<span style="font-size:0.8rem;color:var(--text-dim);align-self:center;">${client?.name || l.client_id} · ${new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>`;
+
+      const row = (label, val) => val ? `<span style="color:var(--text-dim);font-weight:600;">${label}</span><span style="color:var(--text-mid);">${esc(val)}</span>` : '';
+      document.getElementById('ldGrid').innerHTML = [
+        row('Email',    l.email),
+        row('Phone',    l.phone),
+        row('Address',  l.service_address),
+        row('Service',  l.project_type),
+        row('Size',     l.square_footage || l.property_size),
+        row('Source',   l.traffic_source),
+      ].filter(Boolean).join('');
+
+      const msgWrap = document.getElementById('ldMsgWrap');
+      if (l.message) {
+        document.getElementById('ldMsg').textContent = l.message;
+        msgWrap.style.display = '';
+      } else {
+        msgWrap.style.display = 'none';
+      }
+
+      document.getElementById('leadDetailModal').classList.add('open');
+    }
+
+    document.getElementById('ldClose').addEventListener('click', () => {
+      document.getElementById('leadDetailModal').classList.remove('open');
+    });
+
+    document.getElementById('ldDelete').addEventListener('click', async () => {
+      const l = allLeads.find(l => l.id === ldActiveId);
+      if (!l) return;
+      if (!confirm(`Delete lead for "${l.name}"?\n\nThis cannot be undone.`)) return;
+      const btn = document.getElementById('ldDelete');
+      btn.disabled = true; btn.textContent = 'Deleting…';
+      const { error } = await supabaseClient.from('leads').delete().eq('id', ldActiveId);
+      btn.disabled = false; btn.textContent = 'Delete Lead';
+      if (error) { alert('Delete failed: ' + error.message); return; }
+      document.getElementById('leadDetailModal').classList.remove('open');
+      allLeads = allLeads.filter(l => l.id !== ldActiveId);
+      updateStats(); renderFeed(allLeads.slice(0,25)); renderTwCards();
+    });
 
     function timeAgo(s) {
       const diff = Math.floor((Date.now()-new Date(s))/1000);
