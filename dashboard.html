@@ -1533,7 +1533,7 @@
             </div>
             ${c.site_live !== undefined ? `<div class="site-toggle-row" onclick="event.stopPropagation()">
               <button class="site-toggle-btn ${c.site_live ? 'is-live' : 'is-staged'}"
-                      onclick="toggleSiteLive('${esc(c.id)}', ${c.site_live})">
+                      onclick="toggleSiteLive('${esc(c.client_id)}', ${c.site_live})">
                 ${c.site_live ? '● LIVE' : '⊙ STAGED'}
               </button>
             </div>` : ''}
@@ -2035,12 +2035,15 @@
     }
 
     // ── Site live toggle ──────────────────────────────────────────────
-    async function toggleSiteLive(id, currentVal) {
-      const { error } = await supabaseClient
-        .from('tidewise_clients')
-        .update({ site_live: !currentVal })
-        .eq('id', id);
-      if (!error) await loadTwClients();
+    async function toggleSiteLive(clientId, currentVal) {
+      const pw = sessionStorage.getItem('tw_pw');
+      const res = await fetch('/.netlify/functions/toggle-site-live', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientId, live: !currentVal, password: pw }),
+      });
+      const { ok } = await res.json();
+      if (ok) await loadTwClients();
     }
 
     // ── Utils ─────────────────────────────────────────────────────────

@@ -60,7 +60,7 @@ exports.handler = async (event) => {
       email: c.email,
       lead_type: c.business_type === 'booking' ? 'booking' : 'project',
       tier: 'safe-harbor',
-      setup_collected: false,
+      setup_collected: true,
       site_live: false,
     }),
   });
