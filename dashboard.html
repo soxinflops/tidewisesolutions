@@ -2048,6 +2048,10 @@
           updateStats(); prependFeed(payload.new); renderTwCards();
           if (activeClient === payload.new.client_id) openDetail(activeClient);
         })
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:'api_usage',
+          filter: 'provider=eq.stripe_payment' }, () => {
+          loadStripe();
+        })
         .subscribe();
     }
 
